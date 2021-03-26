@@ -1,5 +1,7 @@
 package com.vdegree.february.im.ws.mqlistener;
 
+import com.vdegree.february.im.api.BaseHandle;
+import com.vdegree.february.im.api.WSCMD;
 import com.vdegree.february.im.api.ws.base.reponse.ReponseProto;
 import com.vdegree.february.im.common.utils.SpringContextUtil;
 import com.vdegree.february.im.ws.cache.CacheChannelGroupManager;
@@ -32,5 +34,9 @@ public class WSProxyBroadcastConsume {
 //        msg.getCmd() TODO 区分是响应 还是 推送
 //        cacheChannelGroupManager.writeInUserIdsAndFlush(msg.)
 //        springContextUtil.getBean(msg.getCmd().getHandBean(), BaseHandle.class).exector(msg);
+        WSCMD consumeType = WSCMD.getConsumeType(msg.getCmd());
+        BaseHandle baseHandle = springContextUtil.getBean(consumeType.getHandBean(), BaseHandle.class);
+        
+
     }
 }

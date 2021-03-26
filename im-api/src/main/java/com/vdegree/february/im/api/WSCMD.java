@@ -2,7 +2,9 @@ package com.vdegree.february.im.api;
 
 
 import com.google.common.collect.Maps;
-import com.vdegree.february.im.api.handle.Send1v1RoomRequestHandle;
+import com.vdegree.february.im.api.handle.proxy.PushHandler;
+import com.vdegree.february.im.api.handle.proxy.RequestHandler;
+import com.vdegree.february.im.api.handle.service.Send1v1RoomRequestHandle;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -26,12 +28,12 @@ public enum WSCMD {
      *
      * 起始位置{@link REQUEST_HEARTBEAT}
      */
-    REQUEST(0,"请求", 10001,19999),
+    REQUEST(0,"请求", 10001,19999, RequestHandler.class),
     /**
      *
      * 起始位置{@link PUSH_INVITED_USER_ENTER_ROOM}
      */
-    PUSH(1,"推送",20000,29999),
+    PUSH(1,"推送",20000,29999, PushHandler.class),
 
 
 
@@ -67,11 +69,12 @@ public enum WSCMD {
         this.handBean = handBean;
     }
 
-    WSCMD(Integer type, String name,Integer startPoint,Integer endPoint) {
+    WSCMD(Integer type, String name,Integer startPoint,Integer endPoint,Class handBean) {
         this.type = type;
         this.name = name;
         this.endPoint = endPoint;
         this.startPoint = startPoint;
+        this.handBean = handBean;
     }
 
     static {

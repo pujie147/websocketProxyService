@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @version 1.0
  * @date 2021/3/25 11:09
  */
-@SpringBootApplication(scanBasePackages = {"com.vdegree.february.im.ws","com.vdegree.february.im.common"})
+@SpringBootApplication(scanBasePackages = {"com.vdegree.february.im.ws","com.vdegree.february.im.common","com.vdegree.february.im.api.handle.proxy"})
 public class WSProxyApplication {
     public static void main(String[] args) {
         SpringApplication.run(WSProxyApplication.class, args);
