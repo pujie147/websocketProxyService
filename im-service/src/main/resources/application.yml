@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+#    password: hehuiredis177
+
+  rabbitmq:
+    host: 192.168.0.30
+    port: 5672
+    username: app
+    password: app
+    #虚拟host 可以不设置,使用server默认host
+    virtual-host: whispark
+
+logging:
+  level:
+    root: debug
+
+
+
