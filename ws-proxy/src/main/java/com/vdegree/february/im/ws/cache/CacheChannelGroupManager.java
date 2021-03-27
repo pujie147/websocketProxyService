@@ -106,6 +106,17 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
         return cacheManager.getChannelByUserId(userId);
     }
 
+    /**
+     * @Author DELL
+     * @Date 13:48 2021/3/27
+     * @Description 是否包含userId
+     * @param: userId
+     * @Return java.lang.Boolean 
+     * @Exception 
+     **/
+    public Boolean containsUserId(Long userId) {
+        return cacheManager.containsUserId(userId);
+    }
 //    /**
 //     * @Author DELL
 //     * @Date 15:33 2021/3/25

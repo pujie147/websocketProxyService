@@ -1,13 +1,16 @@
 package com.vdegree.february.im.service.mqlistener;
 
-import com.vdegree.february.im.api.BaseHandle;
-import com.vdegree.february.im.api.ws.base.reponse.ReponseProto;
-import com.vdegree.february.im.api.ws.base.request.RequestProto;
-import com.vdegree.february.im.common.utils.SpringContextUtil;
+import com.vdegree.february.im.api.ws.BaseProto;
+import com.vdegree.february.im.api.ws.ReponseProto;
+import com.vdegree.february.im.api.ws.RequestProto;
+import com.vdegree.february.im.service.ControllerManger;
+import com.vdegree.february.im.service.handle.BaseImServiceHandle;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 
@@ -17,10 +20,11 @@ import org.springframework.stereotype.Component;
  * @date 2021/3/26 19:03
  */
 @Component
+@Log4j2
 public class ReceiverWSProxy {
-
     @Autowired
-    private SpringContextUtil springContextUtil;
+    @Qualifier(value = "controllerManager")
+    private ControllerManger controllerManager;
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -31,8 +35,13 @@ public class ReceiverWSProxy {
             exchange = @Exchange(value = "IMServiceDirectExchange", type = ExchangeTypes.DIRECT),
             key = "IMServiceDirectRouting"))
     public void process(RequestProto msg){
-        System.out.println("Receiver2: "+msg.toString());
-        ReponseProto response = springContextUtil.getBean(msg.getCmd().getHandBean(), BaseHandle.class).exector(msg);
-        rabbitTemplate.convertAndSend("WSProxyBroadcastConsumeExchange",null,response);
+        System.out.println("ReceiverWSProxy: "+msg.toString());
+        BaseImServiceHandle handler = controllerManager.get(msg.getCmd().getType());
+        if(handler!=null) {
+            BaseProto reponse = handler.execute(msg);
+            rabbitTemplate.convertAndSend("WSProxyBroadcastConsumeExchange", null, reponse);
+            return;
+        }
+        log.error("未找到cmd:{} , sendUser:{}",msg.getCmd().getType(),msg.getSendUserId());
     }
 }

@@ -2,9 +2,6 @@ package com.vdegree.february.im.api;
 
 
 import com.google.common.collect.Maps;
-import com.vdegree.february.im.api.handle.proxy.PushHandler;
-import com.vdegree.february.im.api.handle.proxy.RequestHandler;
-import com.vdegree.february.im.api.handle.service.Send1v1RoomRequestHandle;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -23,33 +20,33 @@ import java.util.Optional;
  * @version 1.0
  * @date 2021/3/15 16:04
  */
-public enum WSCMD {
+public enum IMCMD {
     /**
      *
      * 起始位置{@link REQUEST_HEARTBEAT}
      */
-    REQUEST(0,"请求", 10001,19999, RequestHandler.class),
+    REQUEST(0,"请求", 10001,19999),
     /**
      *
      * 起始位置{@link PUSH_INVITED_USER_ENTER_ROOM}
      */
-    PUSH(1,"推送",20000,29999, PushHandler.class),
+    PUSH(1,"推送",20000,29999),
 
 
 
     /**
      *  reqeust 请求是 client 发给 service的协议 10000 - 19999
      */
-    REQUEST_HEARTBEAT(10001,"心跳","心跳", null),
-    REQUEST_SEND_1V1_ROOM_REQUEST(10002,"发起1对1房间邀请","房间只能有2个人", Send1v1RoomRequestHandle.class),
+    REQUEST_HEARTBEAT(10001,"心跳","心跳"),
+    REQUEST_SEND_1V1_ROOM_REQUEST(10002,"发起1对1房间邀请","房间只能有2个人"),
 
 
     /**
      *
      *  push 请求是 service主动推送给 client的协议 20000 - 29999
       */
-    PUSH_INVITED_USER_ENTER_ROOM(20001,"邀请用户进入房间","邀请指定用户(用户只能为2人)进入指定房间", null),
-    PUSH_QUIT_ROOM(20001,"退出房间","指定用户退出房间", null),
+    PUSH_INVITED_USER_ENTER_ROOM(20001,"邀请用户进入房间","邀请指定用户(用户只能为2人)进入指定房间"),
+    PUSH_QUIT_ROOM(20001,"退出房间","指定用户退出房间"),
 
 
     // wsproxy -> imService 的协议 30000 - 34999
@@ -60,26 +57,24 @@ public enum WSCMD {
     //
 
     ;
-    private static HashMap<Integer, WSCMD> hashMap;
+    private static HashMap<Integer, IMCMD> hashMap;
 
-    WSCMD(int type, String name, String desc, Class handBean) {
+    IMCMD(int type, String name, String desc) {
         this.type = type;
         this.name = name;
         this.desc = desc;
-        this.handBean = handBean;
     }
 
-    WSCMD(Integer type, String name,Integer startPoint,Integer endPoint,Class handBean) {
+    IMCMD(Integer type, String name, Integer startPoint, Integer endPoint) {
         this.type = type;
         this.name = name;
         this.endPoint = endPoint;
         this.startPoint = startPoint;
-        this.handBean = handBean;
     }
 
     static {
         hashMap= Maps.newHashMapWithExpectedSize(values().length);
-        for(WSCMD v:values()){
+        for(IMCMD v:values()){
             hashMap.put(v.type,v);
         }
     }
@@ -87,7 +82,6 @@ public enum WSCMD {
     private int type;
     private String name;
     private String desc;
-    private Class handBean;
 
     private int startPoint;
     private int endPoint;
@@ -96,24 +90,21 @@ public enum WSCMD {
         return type;
     }
 
-    public Class getHandBean() {
-        return handBean;
-    }
 
-    public static Optional<WSCMD> get(int type){
+    public static Optional<IMCMD> get(int type){
         return Optional.of(hashMap.get(type));
     }
 
     /**
      * 获取cmd的类别
      * 可以查看 {@link REQUEST}
-     * @param wscmd
+     * @param IMCMD
      * @return
      */
-    public static WSCMD getConsumeType(WSCMD wscmd){
-        if(REQUEST.startPoint<=wscmd.getType() && wscmd.getType()<=REQUEST.endPoint){
+    public static IMCMD getConsumeType(IMCMD IMCMD){
+        if(REQUEST.startPoint<= IMCMD.getType() && IMCMD.getType()<=REQUEST.endPoint){
             return REQUEST;
-        }else if(PUSH.startPoint<=wscmd.getType() && wscmd.getType()<=PUSH.endPoint){
+        }else if(PUSH.startPoint<= IMCMD.getType() && IMCMD.getType()<=PUSH.endPoint){
             return PUSH;
         }
         return null;

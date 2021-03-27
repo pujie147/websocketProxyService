@@ -1,4 +1,4 @@
-package com.vdegree.february.im.api.ws.base;
+package com.vdegree.february.im.api;
 
 /**
  * 异常码

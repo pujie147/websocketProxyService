@@ -1,8 +1,6 @@
-package com.vdegree.february.im.api.ws.base.reponse;
+package com.vdegree.february.im.api.ws;
 
-import com.vdegree.february.im.api.ws.base.BaseProto;
-import com.vdegree.february.im.api.ws.base.ErrorEnum;
-import com.vdegree.february.im.api.ws.base.request.RequestProto;
+import com.vdegree.february.im.api.ErrorEnum;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 

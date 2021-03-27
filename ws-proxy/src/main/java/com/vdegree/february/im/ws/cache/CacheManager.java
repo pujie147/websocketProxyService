@@ -98,6 +98,11 @@ public class CacheManager {
         return Optional.of(channel);
     }
 
+
+    public boolean containsUserId(Long userId) {
+        return CHANNEL_USER_ID.asMap().containsKey(userId);
+    }
+
     /**
      * @Author DELL
      * @Date 17:51 2021/3/25

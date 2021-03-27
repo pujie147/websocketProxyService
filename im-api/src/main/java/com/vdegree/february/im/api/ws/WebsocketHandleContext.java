@@ -1,7 +1,5 @@
 package com.vdegree.february.im.api.ws;
 
-import com.vdegree.february.im.api.ws.base.request.RequestProto;
-
 /**
  * 处理从websocket的协议
  *

@@ -1,4 +1,4 @@
-package com.vdegree.february.im.ws.handler;
+package com.vdegree.february.im.ws.handler.netty;
 
 /**
  * TODO
@@ -9,9 +9,9 @@ package com.vdegree.february.im.ws.handler;
  */
 
 import com.google.gson.Gson;
-import com.vdegree.february.im.api.ws.base.ErrorEnum;
-import com.vdegree.february.im.api.ws.base.reponse.ReponseProto;
-import com.vdegree.february.im.api.ws.base.request.RequestProto;
+import com.vdegree.february.im.api.ErrorEnum;
+import com.vdegree.february.im.api.ws.ReponseProto;
+import com.vdegree.february.im.api.ws.RequestProto;
 import com.vdegree.february.im.common.constant.ChannelAttrConstant;
 import com.vdegree.february.im.ws.cache.CacheChannelGroupManager;
 import io.netty.channel.*;
@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
-import static com.vdegree.february.im.api.WSCMD.REQUEST_HEARTBEAT;
+import static com.vdegree.february.im.api.IMCMD.REQUEST_HEARTBEAT;
 
 /**
  * @Description: 处理消息的handler
@@ -69,10 +69,11 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
         String content = msg.text();
         System.out.println("接受到的数据：" + content);
         RequestProto requestProto = gson.fromJson(content, RequestProto.class);
+        Long userId = ctx.channel().attr(ChannelAttrConstant.USERID).get();
+        requestProto.setSendUserId(userId);
         if(requestProto.getCmd().equals(REQUEST_HEARTBEAT)){
             // TODO update 1、数据转换迁移至decodehandle 2、心跳移至独立handle
             ReponseProto reponseProto = ReponseProto.buildReponse(requestProto);
-            Long userId = ctx.channel().attr(ChannelAttrConstant.USERID).get();
             if(cacheChannelGroupManager.refresh(userId)){
                 log.debug("用户：{} 心跳成功",userId);
                 ctx.channel().writeAndFlush(new TextWebSocketFrame(gson.toJson(reponseProto)));

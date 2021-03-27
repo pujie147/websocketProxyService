@@ -1,6 +1,6 @@
 package com.vdegree.february.im.ws.pipeline;
 
-import com.vdegree.february.im.ws.handler.ChatHandler;
+import com.vdegree.february.im.ws.handler.netty.ChatHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
