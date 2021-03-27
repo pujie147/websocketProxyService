@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @version 1.0
  * @date 2021/3/25 11:09
  */
-@SpringBootApplication(scanBasePackages = {"com.vdegree.february.im.service","com.vdegree.february.im.api.handle"})
+@SpringBootApplication(scanBasePackages = {"com.vdegree.february.im.service","com.vdegree.february.im.common"})
 public class IMServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(IMServiceApplication.class, args);
