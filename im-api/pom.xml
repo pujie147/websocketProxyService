@@ -11,4 +11,11 @@
 
     <artifactId>im-api</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.vdegree.february.im</groupId>
+            <artifactId>im-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>

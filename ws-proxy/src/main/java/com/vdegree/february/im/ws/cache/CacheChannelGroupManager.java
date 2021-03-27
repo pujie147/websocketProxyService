@@ -1,6 +1,7 @@
 package com.vdegree.february.im.ws.cache;
 
 import com.google.common.collect.Sets;
+import com.vdegree.february.im.common.cache.HeartBeatRedisManger;
 import com.vdegree.february.im.common.constant.ChannelAttrConstant;
 import io.netty.channel.*;
 import io.netty.channel.group.ChannelGroupFuture;
@@ -26,7 +27,7 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
     private final EventExecutor executor;
     private CacheManager cacheManager;
     @Autowired
-    public HeartBeatManger heartBeatManger;
+    public HeartBeatRedisManger heartBeatRedisManger;
 
     public CacheChannelGroupManager(EventExecutor executor) {
         super(executor);
@@ -54,7 +55,7 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
      * @Exception
      **/
     public boolean add(Long userId,Channel channel) {
-        heartBeatManger.generateRedisUserEffectiveTime(userId);
+        heartBeatRedisManger.generateRedisUserEffectiveTime(userId);
         cacheManager.put(userId,channel);
         return super.add(channel);
     }
@@ -87,7 +88,7 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
      **/
     public boolean refresh(Long userId){
         if(cacheManager.refreshLocalCacheIdelTime(userId)) {
-            heartBeatManger.refreshRedisUserAndRoomEffectiveTime(userId);
+            heartBeatRedisManger.refreshRedisUserAndRoomEffectiveTime(userId);
             return true;
         }
         return false;

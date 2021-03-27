@@ -1,5 +1,6 @@
 package com.vdegree.february.im.api;
 
+import com.vdegree.february.im.common.constant.IMCMD;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;

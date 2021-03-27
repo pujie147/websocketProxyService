@@ -21,11 +21,11 @@ public class RtcTokenBuilderUtil {
     @Value("${expirationTimeInSeconds:86400}")
     private int expirationTimeInSeconds;
 
-    public String build(String userAccount,String roomId){
+    public String build(Integer userId,String roomId){
         RtcTokenBuilder token = new RtcTokenBuilder();
         int timestamp = (int)(System.currentTimeMillis() / 1000 + expirationTimeInSeconds);
-        String result = token.buildTokenWithUserAccount(appId, appCertificate,
-                roomId, userAccount, RtcTokenBuilder.Role.Role_Publisher, timestamp);
+        String result = token.buildTokenWithUid(appId, appCertificate,
+                roomId, userId, RtcTokenBuilder.Role.Role_Publisher, timestamp);
         return result;
     }
 

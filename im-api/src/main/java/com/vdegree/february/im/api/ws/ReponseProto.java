@@ -1,6 +1,6 @@
 package com.vdegree.february.im.api.ws;
 
-import com.vdegree.february.im.api.ErrorEnum;
+import com.vdegree.february.im.common.constant.ErrorEnum;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 

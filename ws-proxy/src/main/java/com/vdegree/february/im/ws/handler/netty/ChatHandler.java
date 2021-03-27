@@ -9,7 +9,7 @@ package com.vdegree.february.im.ws.handler.netty;
  */
 
 import com.google.gson.Gson;
-import com.vdegree.february.im.api.ErrorEnum;
+import com.vdegree.february.im.common.constant.ErrorEnum;
 import com.vdegree.february.im.api.ws.ReponseProto;
 import com.vdegree.february.im.api.ws.RequestProto;
 import com.vdegree.february.im.common.constant.ChannelAttrConstant;
@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
-import static com.vdegree.february.im.api.IMCMD.REQUEST_HEARTBEAT;
+import static com.vdegree.february.im.common.constant.IMCMD.REQUEST_HEARTBEAT;
 
 /**
  * @Description: 处理消息的handler

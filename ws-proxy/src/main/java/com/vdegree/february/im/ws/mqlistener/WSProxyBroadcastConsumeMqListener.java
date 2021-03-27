@@ -1,8 +1,7 @@
 package com.vdegree.february.im.ws.mqlistener;
 
-import com.vdegree.february.im.api.IMCMD;
+import com.vdegree.february.im.common.constant.IMCMD;
 import com.vdegree.february.im.api.ws.BaseProto;
-import com.vdegree.february.im.api.ws.ReponseProto;
 import com.vdegree.february.im.ws.handler.BaseWsProxyHandle;
 import com.vdegree.february.im.ws.handler.ControllerManger;
 import lombok.extern.log4j.Log4j2;

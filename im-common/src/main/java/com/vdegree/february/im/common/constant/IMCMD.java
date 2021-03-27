@@ -1,4 +1,4 @@
-package com.vdegree.february.im.api;
+package com.vdegree.february.im.common.constant;
 
 
 import com.google.common.collect.Maps;
@@ -38,14 +38,17 @@ public enum IMCMD {
      *  reqeust 请求是 client 发给 service的协议 10000 - 19999
      */
     REQUEST_HEARTBEAT(10001,"心跳","心跳"),
-    REQUEST_SEND_1V1_ROOM_REQUEST(10002,"发起1对1房间邀请","房间只能有2个人"),
-
+    REQUEST_INVITED_USER_ENTER_ROOM(10002,"发起1对1房间邀请","房间只能有2个人"),
+    REQUEST_CONFIRM_INVITATION_ROOM(10003,"确认邀请","在服务器发起 邀请用户进入房间 之后客户端发起的 确认邀请"),
+    REQUEST_CONFIRM_ENTER_ROOM(10004,"确认进入房间","在服务器发起 进入房间 之后客户端发起的 确认进入房间"),
 
     /**
      *
      *  push 请求是 service主动推送给 client的协议 20000 - 29999
       */
     PUSH_INVITED_USER_ENTER_ROOM(20001,"邀请用户进入房间","邀请指定用户(用户只能为2人)进入指定房间"),
+    PUSH_REFUSE_INVITATION(20002,"拒绝邀请","拒绝邀请"),
+    PUSH_ENTER_ROOM(20003,"进入房间","进入房间"),
     PUSH_QUIT_ROOM(20001,"退出房间","指定用户退出房间"),
 
 

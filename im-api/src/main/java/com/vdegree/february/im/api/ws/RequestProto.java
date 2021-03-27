@@ -1,8 +1,7 @@
 package com.vdegree.february.im.api.ws;
 
-import com.vdegree.february.im.api.IMCMD;
+import com.vdegree.february.im.common.constant.IMCMD;
 
-import java.util.HashMap;
 import java.util.UUID;
 
 /**

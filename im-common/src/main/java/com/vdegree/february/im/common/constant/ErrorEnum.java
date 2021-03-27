@@ -1,4 +1,4 @@
-package com.vdegree.february.im.api;
+package com.vdegree.february.im.common.constant;
 
 /**
  * 异常码

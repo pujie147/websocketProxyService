@@ -75,20 +75,6 @@ public class MQConfig {
      */
     private final String DEAD_LETTER_ROUTINGKEY = "im.deadLetter.routingKey";
 
-
-//    @Bean
-//    public RabbitTemplate rabbitTemplate(CachingConnectionFactory connectionFactory) {
-//        connectionFactory.setPublisherConfirmType(CachingConnectionFactory.ConfirmType.CORRELATED);
-//        connectionFactory.setPublisherReturns(true);
-//        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-//        // 当交换机无法正确投递消息的时候，RabbitMQ会调用Basic.Return命令将消息返回给生产者
-//        rabbitTemplate.setMandatory(true);
-//        rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> log.info("消息发送成功:correlationData({}),ack({}),cause({})", correlationData, ack, cause));
-//        rabbitTemplate.setReturnCallback((message, replyCode, replyText, exchange, routingKey) -> log.info("消息丢失:exchange({}),route({}),replyCode({}),replyText({}),message:{}", exchange, routingKey, replyCode, replyText, message));
-//        return rabbitTemplate;
-//    }
-
-
     /**
      *
      * @return FanoutExchange
