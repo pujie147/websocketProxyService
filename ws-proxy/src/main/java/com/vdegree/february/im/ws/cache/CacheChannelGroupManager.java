@@ -103,7 +103,7 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
      * @Return java.util.Optional<io.netty.channel.Channel>
      * @Exception
      **/
-    public Optional<Channel> getChannelByUserId(Long userId) {
+    public Channel getChannelByUserId(Long userId) {
         return cacheManager.getChannelByUserId(userId);
     }
 
@@ -156,8 +156,10 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
         final ChannelGroupFuture future;
         Map<Channel, ChannelFuture> futures = new LinkedHashMap<Channel, ChannelFuture>((int) cacheManager.size());
         userIds.forEach(userId->{
-            Channel c = cacheManager.getChannelByUserId(userId).get();
-            futures.put(c, c.writeAndFlush(message));
+            Channel c = cacheManager.getChannelByUserId(userId);
+            if(c!=null) {
+                futures.put(c, c.writeAndFlush(message));
+            }
         });
         future = new DefaultChannelGroupFuture(this, futures, this.executor);
         return future;
@@ -178,7 +180,7 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
         HashSet<Long> userIdSet = Sets.newHashSet(userIds);
         cacheManager.userIds().forEach(userId -> {
             if(!userIdSet.contains(userId)){//不包含的用户发送
-                Channel c = cacheManager.getChannelByUserId(userId).get();
+                Channel c = cacheManager.getChannelByUserId(userId);
                 futures.put(c, c.writeAndFlush(message));
             }
         });

@@ -1,7 +1,6 @@
 package com.vdegree.february.im.service.mqlistener;
 
 import com.vdegree.february.im.api.ws.BaseProto;
-import com.vdegree.february.im.api.ws.ReponseProto;
 import com.vdegree.february.im.api.ws.RequestProto;
 import com.vdegree.february.im.common.constant.ImServiceQueueConstant;
 import com.vdegree.february.im.common.constant.WSPorxyBroadcastConstant;
@@ -37,12 +36,16 @@ public class ReceiverWSProxy {
             exchange = @Exchange(value = ImServiceQueueConstant.EXCHANGE_NAME, type = ExchangeTypes.DIRECT),
             key = ImServiceQueueConstant.ROUTING_KEY))
     public void process(RequestProto msg){
-        System.out.println("ReceiverWSProxy: "+msg.toString());
-        BaseImServiceHandle handler = controllerManager.get(msg.getCmd().getType());
-        if(handler!=null) {
-            BaseProto reponse = handler.execute(msg);
-            rabbitTemplate.convertAndSend(WSPorxyBroadcastConstant.EXCHANGE_NAME, null, reponse);
-            return;
+        try {
+            System.out.println("ReceiverWSProxy: " + msg);
+            BaseImServiceHandle handler = controllerManager.get(msg.getCmd().getType());
+            if (handler != null) {
+                BaseProto reponse = handler.execute(msg);
+                rabbitTemplate.convertAndSend(WSPorxyBroadcastConstant.EXCHANGE_NAME, null, reponse);
+                return;
+            }
+        }catch (Exception e){
+            log.error(e);
         }
         log.error("未找到cmd:{} , sendUser:{}",msg.getCmd().getType(),msg.getSendUserId());
     }

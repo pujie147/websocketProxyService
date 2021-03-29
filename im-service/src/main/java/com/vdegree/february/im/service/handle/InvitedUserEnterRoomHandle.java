@@ -1,12 +1,13 @@
 package com.vdegree.february.im.service.handle;
 
 import com.google.common.collect.Lists;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.api.IMController;
 import com.vdegree.february.im.api.ws.BaseProto;
 import com.vdegree.february.im.api.ws.PushProto;
-import com.vdegree.february.im.api.ws.ReponseProto;
+import com.vdegree.february.im.api.ws.ResponseProto;
 import com.vdegree.february.im.api.ws.RequestProto;
 import com.vdegree.february.im.api.ws.message.push.InvitedUserEnterRoomPushMsg;
 import com.vdegree.february.im.api.ws.message.request.InvitedUserEnterRoomRequestMsg;
@@ -33,14 +34,14 @@ public class InvitedUserEnterRoomHandle implements BaseImServiceHandle {
     private Gson gson;
 
     @Override
-    public ReponseProto execute(RequestProto requestProto) {
-        InvitedUserEnterRoomRequestMsg invitedUserEnterRoomRequestMsg = gson.fromJson(gson.toJson(requestProto.getMsg()), InvitedUserEnterRoomRequestMsg.class);
+    public ResponseProto execute(RequestProto requestProto) {
+        RequestProto<InvitedUserEnterRoomRequestMsg> invitedUserEnterRoomRequestMsgRequestProto = gson.fromJson(requestProto.getJson(), new TypeToken<RequestProto<InvitedUserEnterRoomRequestMsg>>(){}.getType());
 
         InvitedUserEnterRoomPushMsg pushMsg = new InvitedUserEnterRoomPushMsg();
-        pushMsg.setRoomType(invitedUserEnterRoomRequestMsg.getRoomType());
+        pushMsg.setRoomType(invitedUserEnterRoomRequestMsgRequestProto.getMessage().getRoomType());
         pushMsg.setSendUserId(requestProto.getSendUserId());
-        PushProto pushProto = PushProto.buildPush(IMCMD.PUSH_INVITED_USER_ENTER_ROOM, gson.toJson(pushMsg), PushType.PUSH_CONTAIN_USER,Lists.newArrayList(invitedUserEnterRoomRequestMsg.getInvitedUserId()));
+        PushProto pushProto = PushProto.buildPush(IMCMD.PUSH_INVITED_USER_ENTER_ROOM, gson.toJson(pushMsg), PushType.PUSH_CONTAIN_USER,Lists.newArrayList(invitedUserEnterRoomRequestMsgRequestProto.getMessage().getInvitedUserId()));
         rabbitTemplate.convertAndSend("WSProxyBroadcastConsumeExchange",null,(BaseProto)pushProto);
-        return ReponseProto.buildReponse(requestProto);
+        return ResponseProto.buildResponse(requestProto);
     }
 }

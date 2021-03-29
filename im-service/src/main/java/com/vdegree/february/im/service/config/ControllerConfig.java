@@ -1,6 +1,5 @@
 package com.vdegree.february.im.service.config;
 
-import com.google.common.collect.Maps;
 import com.vdegree.february.im.api.IMController;
 import com.vdegree.february.im.service.ControllerManger;
 import com.vdegree.february.im.service.handle.BaseImServiceHandle;
@@ -9,7 +8,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,6 +32,7 @@ public class ControllerConfig {
             if (bean instanceof BaseImServiceHandle && clazz.getAnnotation(IMController.class) != null) {
                 IMController imController = (IMController) clazz.getAnnotation(IMController.class);
                 controllerManager.put(imController.cmd().getType(), (BaseImServiceHandle) bean);
+
             }
         }
         return controllerManager;

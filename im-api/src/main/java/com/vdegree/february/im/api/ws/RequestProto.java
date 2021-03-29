@@ -1,6 +1,8 @@
 package com.vdegree.february.im.api.ws;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vdegree.february.im.common.constant.type.IMCMD;
+import lombok.Data;
 
 import java.util.UUID;
 
@@ -11,26 +13,20 @@ import java.util.UUID;
  * @version 1.0
  * @date 2021/3/15 16:26
  */
-
-public class RequestProto extends BaseProto {
-
-    /**
-     * 消息随机数，后台用于同一秒内的消息去重。请确保该字段填的是随机数
-     */
-    private static final String MSG_RANDOM = "msgRandom";
-    public long getMsgRandom() {
-        return ((Double)this.getOrDefault(MSG_RANDOM,0D)).longValue();
-    }
-
+@Data
+public class RequestProto<T> extends BaseProto {
+    private Integer msgRandom;
+    private T message;
+    @JsonIgnore
+    private String json;
 
 
     public static RequestProto buildRequest(IMCMD cmd){
         RequestProto requestProto = new RequestProto();
-        requestProto.setReqeustId(UUID.randomUUID().toString());
+        requestProto.setRequestId(UUID.randomUUID().toString());
         requestProto.setCmd(cmd);
-        requestProto.setReqeustTime(System.currentTimeMillis());
+        requestProto.setRequestTime(System.currentTimeMillis());
         return requestProto;
     }
-
 
 }

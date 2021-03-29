@@ -31,7 +31,7 @@ public class RequestHandler implements BaseWsProxyHandle {
         log.info("request Handler : "+proto.toString());
         Channel channel = null;
         if(cacheChannelGroupManager.containsUserId(proto.getSendUserId())) {
-            channel = cacheChannelGroupManager.getChannelByUserId(proto.getSendUserId()).get();
+            channel = cacheChannelGroupManager.getChannelByUserId(proto.getSendUserId());
             if(channel!=null){
                 channel.writeAndFlush(new TextWebSocketFrame(gson.toJson(proto)));
                 return;

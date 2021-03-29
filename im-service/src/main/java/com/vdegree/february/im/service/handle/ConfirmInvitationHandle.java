@@ -9,7 +9,7 @@ import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.api.IMController;
 import com.vdegree.february.im.api.ws.BaseProto;
 import com.vdegree.february.im.api.ws.PushProto;
-import com.vdegree.february.im.api.ws.ReponseProto;
+import com.vdegree.february.im.api.ws.ResponseProto;
 import com.vdegree.february.im.api.ws.RequestProto;
 import com.vdegree.february.im.common.constant.type.PushType;
 import com.vdegree.february.im.common.constant.type.ReplyType;
@@ -45,8 +45,8 @@ public class ConfirmInvitationHandle implements BaseImServiceHandle {
     private RtcTokenBuilderUtil rtcTokenBuilderUtil;
 
     @Override
-    public ReponseProto execute(RequestProto requestProto) {
-        ConfirmInvitationRequestMsg invitedUserEnterRoomRequestMsg = gson.fromJson(gson.toJson(requestProto.getMsg()), ConfirmInvitationRequestMsg.class);
+    public ResponseProto execute(RequestProto requestProto) {
+        ConfirmInvitationRequestMsg invitedUserEnterRoomRequestMsg = gson.fromJson(gson.toJson(requestProto.getJson()), ConfirmInvitationRequestMsg.class);
         Long sendUserId = invitedUserEnterRoomRequestMsg.getSendUserId(); // 邀请人
         Long invitedUserId = requestProto.getSendUserId(); // 被邀请人
         if(ReplyType.ACCEPT.equals(invitedUserEnterRoomRequestMsg.getReplyType())){
@@ -80,6 +80,6 @@ public class ConfirmInvitationHandle implements BaseImServiceHandle {
             BaseProto pushProto = PushProto.buildPush(IMCMD.PUSH_REFUSE_INVITATION, gson.toJson(pushMsg),PushType.PUSH_CONTAIN_USER,Lists.newArrayList(sendUserId));
             rabbitTemplate.convertAndSend("WSProxyBroadcastConsumeExchange",pushProto);
         }
-        return ReponseProto.buildReponse(requestProto);
+        return ResponseProto.buildResponse(requestProto);
     }
 }

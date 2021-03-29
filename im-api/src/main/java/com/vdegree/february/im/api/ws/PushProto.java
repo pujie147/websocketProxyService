@@ -19,42 +19,30 @@ import java.util.UUID;
  */
 @Data
 @Log4j2
-@JsonIgnoreProperties(value = {"userIds","pushType"})
-public class PushProto extends BaseProto {
+public class PushProto<T> extends BaseProto {
 
-
-    private static final String USER_IDS = "userIds";
-    public void setPushUserIds(List<Long> userIds){
-        this.put(USER_IDS,userIds);
-    }
-    public List<Long> getPushUserIds(){
-        return (List<Long>)this.get(USER_IDS);
-    }
-
-    private static final String pushType = "pushType";
-    public void setPushType(PushType pushType){
-        this.put(pushType,pushType);
-    }
-    public PushType getPushType(){
-        return (PushType)this.get(USER_IDS);
-    }
+    private List<Long> pushUserIds;
+    private PushType pushType;
+    private T message;
 
     private PushProto(){}
 
-    public static PushProto buildPush(IMCMD imcmd,String message,PushType pushType,List<Long> userIds){
+    public static <T>PushProto buildPush(IMCMD imcmd,T message,PushType pushType,List<Long> userIds){
         PushProto pushProto = new PushProto();
-        pushProto.setReqeustId(UUID.randomUUID().toString());
+        pushProto.setRequestId(UUID.randomUUID().toString());
         pushProto.setCmd(imcmd);
-        pushProto.setMsg(message);
+        pushProto.setMessage(message);
         pushProto.setPushType(pushType);
         pushProto.setPushUserIds(userIds);
+        pushProto.setRequestTime(System.currentTimeMillis());
         return pushProto;
     }
 
     public static PushProto buildPush(BaseProto baseProto){
-        PushProto pushProto = new PushProto();
-        pushProto.putAll(baseProto);
-        return pushProto;
+        if(baseProto instanceof PushProto){
+            return (PushProto) baseProto;
+        }
+        return null;
     }
 
 

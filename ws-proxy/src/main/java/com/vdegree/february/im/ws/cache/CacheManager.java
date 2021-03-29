@@ -88,14 +88,14 @@ public class CacheManager {
      * @Return java.util.Optional<io.netty.channel.Channel>
      * @Exception
      **/
-    public Optional<Channel> getChannelByUserId(Long userId) {
+    public Channel getChannelByUserId(Long userId) {
         Channel channel = null;
         try {
             channel = CHANNEL_USER_ID.get(userId);
         } catch (Exception e) {
             log.error("获取缓存值出错", e);
         }
-        return Optional.of(channel);
+        return channel;
     }
 
 

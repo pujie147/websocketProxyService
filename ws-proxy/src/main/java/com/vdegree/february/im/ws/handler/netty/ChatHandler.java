@@ -11,7 +11,7 @@ package com.vdegree.february.im.ws.handler.netty;
 import com.google.gson.Gson;
 import com.vdegree.february.im.common.constant.ImServiceQueueConstant;
 import com.vdegree.february.im.common.constant.type.ErrorEnum;
-import com.vdegree.february.im.api.ws.ReponseProto;
+import com.vdegree.february.im.api.ws.ResponseProto;
 import com.vdegree.february.im.api.ws.RequestProto;
 import com.vdegree.february.im.common.constant.ChannelAttrConstant;
 import com.vdegree.february.im.ws.cache.CacheChannelGroupManager;
@@ -19,7 +19,6 @@ import io.netty.channel.*;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.RandomUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -65,24 +64,25 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
         RequestProto requestProto = gson.fromJson(content, RequestProto.class);
         Long userId = ctx.channel().attr(ChannelAttrConstant.USERID).get();
         requestProto.setSendUserId(userId);
-        if(requestProto.getCmd().equals(REQUEST_HEARTBEAT)){
+        if(REQUEST_HEARTBEAT.equals(requestProto.getCmd())){
             // TODO update 1、数据转换迁移至decodehandle 2、心跳移至独立handle
-            ReponseProto reponseProto = ReponseProto.buildReponse(requestProto);
+            ResponseProto responseProto = ResponseProto.buildResponse(requestProto);
             if(cacheChannelGroupManager.refresh(userId)){
                 log.debug("用户：{} 心跳成功",userId);
-                ctx.channel().writeAndFlush(new TextWebSocketFrame(gson.toJson(reponseProto)));
+                ctx.channel().writeAndFlush(new TextWebSocketFrame(gson.toJson(responseProto)));
                 return;
             }
             log.error("用户：{} 心跳失败 用户失效",userId);
-            reponseProto.setError(ErrorEnum.HEART_BEAT_ERROR);
-            ctx.channel().writeAndFlush(new TextWebSocketFrame(gson.toJson(reponseProto))).addListener(future -> {
+            responseProto.setError(ErrorEnum.HEART_BEAT_ERROR);
+            ctx.channel().writeAndFlush(new TextWebSocketFrame(gson.toJson(responseProto))).addListener(future -> {
                 if(future.isSuccess()){
                     ctx.close();
                 }
             });
             return;
         }else{
-            requestProto.setWSProxyStartTime(System.currentTimeMillis());
+            requestProto.setJson(content);
+            requestProto.setWsProxyStartTime(System.currentTimeMillis());
             rabbitTemplate.convertAndSend(ImServiceQueueConstant.EXCHANGE_NAME,ImServiceQueueConstant.ROUTING_KEY, requestProto);
         }
     }

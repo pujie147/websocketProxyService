@@ -6,7 +6,6 @@
     <modules>
         <module>ws-proxy</module>
         <module>im-common</module>
-        <module>im-api</module>
         <module>im-service</module>
         <module>im-api</module>
     </modules>
@@ -94,13 +93,6 @@
         </repository>
     </repositories>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+
 
 </project>

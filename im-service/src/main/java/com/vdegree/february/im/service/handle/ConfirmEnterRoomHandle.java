@@ -2,12 +2,11 @@ package com.vdegree.february.im.service.handle;
 
 import com.google.gson.Gson;
 import com.vdegree.february.im.api.ws.message.request.ConfirmEntryRoomRequestMsg;
-import com.vdegree.february.im.api.ws.message.request.ConfirmInvitationRequestMsg;
 import com.vdegree.february.im.common.cache.RoomDataRedisManger;
 import com.vdegree.february.im.common.cache.UserDataRedisManger;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.api.IMController;
-import com.vdegree.february.im.api.ws.ReponseProto;
+import com.vdegree.february.im.api.ws.ResponseProto;
 import com.vdegree.february.im.api.ws.RequestProto;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,15 +31,15 @@ public class ConfirmEnterRoomHandle implements BaseImServiceHandle {
     private Gson gson;
 
     @Override
-    public ReponseProto execute(RequestProto requestProto) {
-        ConfirmEntryRoomRequestMsg msg = gson.fromJson(gson.toJson(requestProto.getMsg()), ConfirmEntryRoomRequestMsg.class);
+    public ResponseProto execute(RequestProto requestProto) {
+        ConfirmEntryRoomRequestMsg msg = gson.fromJson(gson.toJson(requestProto.getJson()), ConfirmEntryRoomRequestMsg.class);
         userDataRedisManger.putRoomId(requestProto.getSendUserId(),msg.getRoomId());
-        if(roomDataRedisManger.getSendUserId(msg.getRoomId())==requestProto.getSendUserId()){
+        if(roomDataRedisManger.getSendUserId(msg.getRoomId()).compareTo(requestProto.getSendUserId())==0){
             roomDataRedisManger.incConfirmSendUserCount(msg.getRoomId());
             if(roomDataRedisManger.incConfirminvitedUserCount(msg.getRoomId())>0){
                 // TODO 双方都确认 可以发起回调
             }
-        }else if(roomDataRedisManger.getInvitedUserId(msg.getRoomId())==requestProto.getSendUserId()){
+        }else if(roomDataRedisManger.getInvitedUserId(msg.getRoomId()).compareTo(requestProto.getSendUserId())==0){
             roomDataRedisManger.incConfirminvitedUserCount(msg.getRoomId());
             if(roomDataRedisManger.incConfirmSendUserCount(msg.getRoomId())>0){
                 // TODO 双方都确认 可以发起回调
@@ -48,6 +47,6 @@ public class ConfirmEnterRoomHandle implements BaseImServiceHandle {
         }else{
 //            return TODO 返回异常 用户不是该房间成员
         }
-        return ReponseProto.buildReponse(requestProto);
+        return ResponseProto.buildResponse(requestProto);
     }
 }
