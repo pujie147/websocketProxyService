@@ -46,7 +46,7 @@ public class ConfirmInvitationHandle implements BaseImServiceHandle {
 
     @Override
     public ReponseProto execute(RequestProto requestProto) {
-        ConfirmInvitationRequestMsg invitedUserEnterRoomRequestMsg = gson.fromJson(requestProto.getMsg(), ConfirmInvitationRequestMsg.class);
+        ConfirmInvitationRequestMsg invitedUserEnterRoomRequestMsg = gson.fromJson(gson.toJson(requestProto.getMsg()), ConfirmInvitationRequestMsg.class);
         Long sendUserId = invitedUserEnterRoomRequestMsg.getSendUserId(); // 邀请人
         Long invitedUserId = requestProto.getSendUserId(); // 被邀请人
         if(ReplyType.ACCEPT.equals(invitedUserEnterRoomRequestMsg.getReplyType())){

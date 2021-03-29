@@ -33,7 +33,7 @@ public class ConfirmEnterRoomHandle implements BaseImServiceHandle {
 
     @Override
     public ReponseProto execute(RequestProto requestProto) {
-        ConfirmEntryRoomRequestMsg msg = gson.fromJson(requestProto.getMsg(), ConfirmEntryRoomRequestMsg.class);
+        ConfirmEntryRoomRequestMsg msg = gson.fromJson(gson.toJson(requestProto.getMsg()), ConfirmEntryRoomRequestMsg.class);
         userDataRedisManger.putRoomId(requestProto.getSendUserId(),msg.getRoomId());
         if(roomDataRedisManger.getSendUserId(msg.getRoomId())==requestProto.getSendUserId()){
             roomDataRedisManger.incConfirmSendUserCount(msg.getRoomId());

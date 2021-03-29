@@ -78,8 +78,8 @@ class WebSocketServerProtocolHandshakeHandler extends ChannelInboundHandlerAdapt
 //                        ctx.close();
 //                        return;
 //                    }
-//                    ctx.channel().attr(AttributeKey.newInstance(ChannelAttrConstant.USERID)).set(JwtUtils.getUserId(token));
-                    ctx.channel().attr(AttributeKey.newInstance(ChannelAttrConstant.USERID.name())).set(token);
+//                    ctx.channel().attr(ChannelAttrConstant.USERID).set(JwtUtils.getUserId(token).longValue());
+                    ctx.channel().attr(ChannelAttrConstant.USERID).set(Long.valueOf(token));
                 }catch (Exception e){
                     ctx.close();
                     return;
