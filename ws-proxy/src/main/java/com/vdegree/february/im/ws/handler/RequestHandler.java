@@ -37,6 +37,6 @@ public class RequestHandler implements BaseWsProxyHandle {
                 return;
             }
         }
-        log.error("用户：{} 连接已失效 cmd:{}",proto.getSendUserId(),proto.getCmd().getType());
+//        log.error("用户：{} 连接已失效 cmd:{}",proto.getSendUserId(),proto.getCmd().getType());
     }
 }

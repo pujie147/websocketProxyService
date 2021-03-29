@@ -23,7 +23,8 @@ public class RoomDataRedisManger {
     private String FIELD_INVITED_USER_ID = "invitedUserId";
     private String FIELD_START_TIME = "startTime";
     private String FIELD_CONFIRM_TIME = "confirmTime";
-    private String FIELD_CONFIRM_COUNT = "confirmCount";
+    private String FIELD_SEND_USER_CONFIRM_COUNT = "confirmSendUserCount";
+    private String FIELD_INVITED_USER_CONFIRM_COUNT = "confirminvitedUserCount";
 
 
     private String getKey(String roomId){
@@ -37,12 +38,12 @@ public class RoomDataRedisManger {
         opshash.put(getKey(roomId),FIELD_START_TIME,startTime);
     }
 
-    public String getSendUserId(String roomId){
-        return (String)redisTemplate.opsForHash().get(getKey(roomId),FIELD_SEND_USER_ID);
+    public Long getSendUserId(String roomId){
+        return (Long)redisTemplate.opsForHash().get(getKey(roomId),FIELD_SEND_USER_ID);
     }
 
-    public String getInvitedUserId(String roomId){
-        return (String)redisTemplate.opsForHash().get(getKey(roomId),FIELD_INVITED_USER_ID);
+    public Long getInvitedUserId(String roomId){
+        return (Long)redisTemplate.opsForHash().get(getKey(roomId),FIELD_INVITED_USER_ID);
     }
 
     public String getStartTime(String roomId){
@@ -56,11 +57,18 @@ public class RoomDataRedisManger {
         return (Long)redisTemplate.opsForHash().get(getKey(roomId),FIELD_CONFIRM_TIME);
     }
 
-    public void putConfirmCount(String roomId,Long confirmCount){
-        redisTemplate.opsForHash().put(getKey(roomId),FIELD_CONFIRM_COUNT,confirmCount);
+    public Long incConfirmSendUserCount(String roomId){
+        return redisTemplate.opsForHash().increment(getKey(roomId),FIELD_SEND_USER_CONFIRM_COUNT,1);
     }
-    public Long getConfirmCount(String roomId){
-        return (Long)redisTemplate.opsForHash().get(getKey(roomId),FIELD_CONFIRM_COUNT);
+    public Long getConfirmSendUserCount(String roomId){
+        return (Long)redisTemplate.opsForHash().get(getKey(roomId),FIELD_SEND_USER_CONFIRM_COUNT);
+    }
+
+    public Long incConfirminvitedUserCount(String roomId){
+        return redisTemplate.opsForHash().increment(getKey(roomId),FIELD_INVITED_USER_CONFIRM_COUNT,1);
+    }
+    public Long getConfirminvitedUserCount(String roomId){
+        return (Long)redisTemplate.opsForHash().get(getKey(roomId),FIELD_INVITED_USER_CONFIRM_COUNT);
     }
 
     public void delete(String roomId){

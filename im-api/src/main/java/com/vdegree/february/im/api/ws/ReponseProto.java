@@ -1,5 +1,6 @@
 package com.vdegree.february.im.api.ws;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vdegree.february.im.common.constant.type.ErrorEnum;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
@@ -13,6 +14,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @Data
 @Log4j2
+@JsonIgnoreProperties(value={"sendUserId","wsProxyStartTime","msgRandom"})
 public class ReponseProto extends BaseProto {
 
     public static ReponseProto buildReponse(RequestProto requestProto){
