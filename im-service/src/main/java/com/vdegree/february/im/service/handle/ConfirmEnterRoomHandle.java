@@ -1,6 +1,6 @@
 package com.vdegree.february.im.service.handle;
 
-import com.vdegree.february.im.common.constant.IMCMD;
+import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.api.IMController;
 import com.vdegree.february.im.api.ws.ReponseProto;
 import com.vdegree.february.im.api.ws.RequestProto;

@@ -3,25 +3,21 @@ package com.vdegree.february.im.service.handle;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.vdegree.february.im.api.ws.message.push.RefuseInvitationPushMsg;
-import com.vdegree.february.im.common.cache.RoomDataRedisManger;
 import com.vdegree.february.im.common.cache.RoomHeartBeatRedisManger;
 import com.vdegree.february.im.common.cache.UserDataRedisManger;
-import com.vdegree.february.im.common.constant.IMCMD;
+import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.api.IMController;
 import com.vdegree.february.im.api.ws.BaseProto;
 import com.vdegree.february.im.api.ws.PushProto;
 import com.vdegree.february.im.api.ws.ReponseProto;
 import com.vdegree.february.im.api.ws.RequestProto;
-import com.vdegree.february.im.common.constant.ReplyType;
+import com.vdegree.february.im.common.constant.type.ReplyType;
 import com.vdegree.february.im.api.ws.message.push.EnterRoomPushMsg;
 import com.vdegree.february.im.api.ws.message.request.ConfirmInvitationRequestMsg;
 import com.vdegree.february.im.common.utils.RoomIdGenerateUtil;
 import com.vdegree.february.im.common.utils.agora.RtcTokenBuilderUtil;
-import com.vdegree.february.im.common.utils.agora.media.RtcTokenBuilder;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 
 /**
  * 1.接收客户端发起的聊天邀请

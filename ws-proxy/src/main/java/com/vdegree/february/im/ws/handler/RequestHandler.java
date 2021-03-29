@@ -1,7 +1,7 @@
 package com.vdegree.february.im.ws.handler;
 
 import com.google.gson.Gson;
-import com.vdegree.february.im.common.constant.IMCMD;
+import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.api.IMController;
 import com.vdegree.february.im.api.ws.BaseProto;
 import com.vdegree.february.im.ws.cache.CacheChannelGroupManager;

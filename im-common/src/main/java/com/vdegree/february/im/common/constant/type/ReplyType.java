@@ -1,4 +1,4 @@
-package com.vdegree.february.im.common.constant;
+package com.vdegree.february.im.common.constant.type;
 
 import com.google.gson.annotations.SerializedName;
 

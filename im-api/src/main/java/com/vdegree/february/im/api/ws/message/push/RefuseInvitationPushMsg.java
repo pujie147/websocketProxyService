@@ -1,7 +1,7 @@
 package com.vdegree.february.im.api.ws.message.push;
 
-import com.vdegree.february.im.common.constant.ReplyType;
-import com.vdegree.february.im.common.constant.RoomType;
+import com.vdegree.february.im.common.constant.type.ReplyType;
+import com.vdegree.february.im.common.constant.type.RoomType;
 import lombok.Data;
 
 /**

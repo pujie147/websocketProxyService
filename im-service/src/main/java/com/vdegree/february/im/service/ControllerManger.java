@@ -16,14 +16,4 @@ public class ControllerManger extends HashMap<Integer, BaseImServiceHandle> {
     public ControllerManger(int initialCapacity) {
         Maps.newHashMapWithExpectedSize(initialCapacity);
     }
-
-    public BaseImServiceHandle getHandler(Integer key) {
-        return super.get(key);
-    }
-
-    public BaseImServiceHandle putHandler(Integer key, BaseImServiceHandle value) {
-        return super.put(key, value);
-    }
-
-
 }

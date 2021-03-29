@@ -1,7 +1,7 @@
 package com.vdegree.february.im.common.utils;
 
 import com.google.common.collect.Lists;
-import com.vdegree.february.im.common.constant.RoomType;
+import com.vdegree.february.im.common.constant.type.RoomType;
 
 import java.util.stream.Collectors;
 

@@ -2,7 +2,7 @@ package com.vdegree.february.im.service.handle;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
-import com.vdegree.february.im.common.constant.IMCMD;
+import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.api.IMController;
 import com.vdegree.february.im.api.ws.BaseProto;
 import com.vdegree.february.im.api.ws.PushProto;

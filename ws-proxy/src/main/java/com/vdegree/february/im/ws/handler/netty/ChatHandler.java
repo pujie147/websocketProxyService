@@ -9,7 +9,8 @@ package com.vdegree.february.im.ws.handler.netty;
  */
 
 import com.google.gson.Gson;
-import com.vdegree.february.im.common.constant.ErrorEnum;
+import com.vdegree.february.im.common.constant.ImServiceQueueConstant;
+import com.vdegree.february.im.common.constant.type.ErrorEnum;
 import com.vdegree.february.im.api.ws.ReponseProto;
 import com.vdegree.february.im.api.ws.RequestProto;
 import com.vdegree.february.im.common.constant.ChannelAttrConstant;
@@ -24,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
-import static com.vdegree.february.im.common.constant.IMCMD.REQUEST_HEARTBEAT;
+import static com.vdegree.february.im.common.constant.type.IMCMD.REQUEST_HEARTBEAT;
 
 /**
  * @Description: 处理消息的handler
@@ -38,10 +39,6 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
     @Autowired
     private CacheChannelGroupManager cacheChannelGroupManager;
 
-    // 用于记录和管理所有客户端的channle
-    @Autowired
-    public CacheChannelGroupManager clients;
-
     @Autowired
     private Gson gson;
 
@@ -52,10 +49,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         // 握手完成 进行初始化
         if (evt instanceof WebSocketServerProtocolHandler.HandshakeComplete) {
-//           clients.add(ctx.channel().attr(ChannelAttrConstant.USERID).get(),ctx.channel());// TODO 占时注释
-            long userId = RandomUtils.nextLong(1000,2000);
-            clients.add(userId,ctx.channel());
-            ctx.channel().attr(ChannelAttrConstant.USERID).set(userId);
+            cacheChannelGroupManager.add(ctx.channel().attr(ChannelAttrConstant.USERID).get(),ctx.channel());
         }
         super.userEventTriggered(ctx, evt);
     }
@@ -89,7 +83,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
             return;
         }else{
             requestProto.setWSProxyStartTime(System.currentTimeMillis());
-            rabbitTemplate.convertAndSend("IMServiceDirectExchange","IMServiceDirectRouting", requestProto);
+            rabbitTemplate.convertAndSend(ImServiceQueueConstant.EXCHANGE_NAME,ImServiceQueueConstant.ROUTING_KEY, requestProto);
         }
     }
 }
