@@ -64,6 +64,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
         RequestProto requestProto = gson.fromJson(content, RequestProto.class);
         Long userId = ctx.channel().attr(ChannelAttrConstant.USERID).get();
         requestProto.setSendUserId(userId);
+        //todo 缺少用户存活校验
         if(REQUEST_HEARTBEAT.equals(requestProto.getCmd())){
             // TODO update 1、数据转换迁移至decodehandle 2、心跳移至独立handle
             ResponseProto responseProto = ResponseProto.buildResponse(requestProto);

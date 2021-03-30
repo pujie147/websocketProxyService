@@ -11,7 +11,13 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * TODO
+ * TODO 把request组合成一个大对象RequestContext 包括 baseProto、requestProto、internalProto 的属性还有 buildresponseProto 和 buildPushProto 方法
+ * InternalProto是内部服务器要用的数据和链路追踪信息 包括
+ *  1、消息来源userId
+ *  2、消息接收时间
+ *  3、消息在imService收发时间
+ *  4、消息是imService执行结束时间
+ *
  *
  * @author DELL
  * @version 1.0
