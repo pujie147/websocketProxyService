@@ -24,6 +24,12 @@ public enum ErrorEnum {
     // 心跳异常用户失效
     HEART_BEAT_ERROR(1001,"心跳异常","用户失效"),
 
+    /**
+     * imService 异常 业务异常
+     * code范围 1301 - 2000;
+     */
+    GRAB_ORDER_END(1301,"抢单结束","抢单结束"),
+
 
     ;
 

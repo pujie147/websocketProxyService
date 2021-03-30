@@ -15,6 +15,11 @@ spring:
     #虚拟host 可以不设置,使用server默认host
     virtual-host: whispark
 
+ws:
+  service:
+    grab-order：
+      effective-time: 60
+
 logging:
   level:
     root: info
