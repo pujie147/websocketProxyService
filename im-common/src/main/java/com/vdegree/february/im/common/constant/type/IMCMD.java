@@ -48,6 +48,10 @@ public enum IMCMD {
     REQUEST_CONFIRM_INVITATION_ROOM(10003,"确认邀请","在服务器发起 邀请用户进入房间 之后客户端发起的 确认邀请"),
     @SerializedName("10004")
     REQUEST_CONFIRM_ENTER_ROOM(10004,"确认进入房间","在服务器发起 进入房间 之后客户端发起的 确认进入房间"),
+    @SerializedName("10005")
+    REQUEST_QUIT_ROOM(10005,"退出房间","退出房间"),
+    @SerializedName("10006")
+    REQUEST_GRAB_ORDER_APPLICATION(10006,"抢单申请","抢单申请"),
     @SerializedName("10011")
     REQUEST_ROOM_HEARTBEAT(10011,"房间心跳","房间心跳"),
 
@@ -62,7 +66,14 @@ public enum IMCMD {
     PUSH_REFUSE_INVITATION(20002,"拒绝邀请","拒绝邀请"),
     @SerializedName("20003")
     PUSH_ENTER_ROOM(20003,"进入房间","进入房间"),
-//    PUSH_QUIT_ROOM(20001,"退出房间","指定用户退出房间"),
+    @SerializedName("20004")
+    PUSH_QUIT_ROOM(20004,"退出房间","退出房间"),
+    @SerializedName("20005")
+    PUSH_CONNECTION_CLOSE(20005,"链接关闭","链接关闭"),
+    @SerializedName("20006")
+    PUSH_GRAB_ORDER_INVITATION(20006,"抢单邀请","链接关闭"),
+    @SerializedName("20007")
+    PUSH_GRAB_ORDER_END(20007,"抢单结束","抢单结束"),
 
 
     // wsproxy -> imService 的协议 30000 - 34999
