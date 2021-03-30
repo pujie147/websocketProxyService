@@ -1,5 +1,6 @@
 package com.vdegree.february.im.ws.cache;
 
+import com.google.common.cache.RemovalCause;
 import com.google.common.collect.Sets;
 import com.vdegree.february.im.common.cache.HeartBeatRedisManger;
 import com.vdegree.february.im.common.constant.ChannelAttrConstant;
@@ -9,7 +10,9 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -23,9 +26,18 @@ import java.util.*;
  * @date 2021/3/19 13:36
  */
 @Component
+@Log4j2
 public class CacheChannelGroupManager extends DefaultChannelGroup {
     private final EventExecutor executor;
     private CacheManager cacheManager;
+    /** 缓存项最大数量 */
+    @Value("${ws.service.connection-max}")
+    private Long connectionMax;
+
+    /** 缓存时间：秒 */
+    @Value("${ws.service.idle-time}")
+    private Long idelTime;
+
     @Autowired
     public HeartBeatRedisManger heartBeatRedisManger;
 
@@ -41,8 +53,13 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
     @PostConstruct
     private void init() throws Exception {
         cacheManager = new CacheManager(removalNotification ->  {
-            System.out.println("删除用户 "+removalNotification.getKey() +" 数据 用户已下线");
-        });
+            removalNotification.getValue().close();
+            if(RemovalCause.SIZE.equals(removalNotification.getCause())){
+                log.error("删除用户 {} 数据 用户已下线 原因:{} 链接缓存超出范围",removalNotification.getKey(),removalNotification.getCause().name());
+            }else{
+                log.info("删除用户 {} 数据 用户已下线 原因:{}",removalNotification.getKey(),removalNotification.getCause().name());
+            }
+        },connectionMax.intValue(),idelTime);
     }
 
     /**
@@ -118,18 +135,6 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
     public Boolean containsUserId(Long userId) {
         return cacheManager.containsUserId(userId);
     }
-//    /**
-//     * @Author DELL
-//     * @Date 15:33 2021/3/25
-//     * @Description
-//        通过channelId查询userId
-//     * @param: channelId
-//     * @Return java.lang.Long
-//     * @Exception
-//     **/
-//    public Long getUserIdByChannelId(String channelId){
-//        return cacheManager.getUserIdByChannelId(channelId);
-//    }
 
     /**
      * @Author DELL

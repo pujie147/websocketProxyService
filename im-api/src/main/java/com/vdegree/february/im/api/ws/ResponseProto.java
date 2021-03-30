@@ -15,8 +15,8 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ResponseProto<T> extends BaseProto {
 
-    private String errorInfo;
-    private Integer errorCode;
+    private String errorInfo = ErrorEnum.SUCCESS_INFO;
+    private Integer errorCode = ErrorEnum.SUCCESS_CODE;
     private T message;
 
     public static ResponseProto buildResponse(RequestProto requestProto){

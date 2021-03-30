@@ -1,6 +1,7 @@
 package com.vdegree.february.im.service.handle;
 
 import com.google.common.collect.Lists;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.vdegree.february.im.api.ws.message.push.RefuseInvitationPushMsg;
 import com.vdegree.february.im.common.cache.RoomHeartBeatRedisManger;
@@ -46,13 +47,13 @@ public class ConfirmInvitationHandle implements BaseImServiceHandle {
 
     @Override
     public ResponseProto execute(RequestProto requestProto) {
-        ConfirmInvitationRequestMsg invitedUserEnterRoomRequestMsg = gson.fromJson(gson.toJson(requestProto.getJson()), ConfirmInvitationRequestMsg.class);
-        Long sendUserId = invitedUserEnterRoomRequestMsg.getSendUserId(); // 邀请人
+        RequestProto<ConfirmInvitationRequestMsg> invitedUserEnterRoomRequestMsg = gson.fromJson(requestProto.getJson(), new TypeToken<RequestProto<ConfirmInvitationRequestMsg>>(){}.getType());
+        Long sendUserId = invitedUserEnterRoomRequestMsg.getMessage().getSendUserId(); // 邀请人
         Long invitedUserId = requestProto.getSendUserId(); // 被邀请人
-        if(ReplyType.ACCEPT.equals(invitedUserEnterRoomRequestMsg.getReplyType())){
-            String roomId = RoomIdGenerateUtil.generate(sendUserId, invitedUserId, invitedUserEnterRoomRequestMsg.getRoomType());
+        if(ReplyType.ACCEPT.equals(invitedUserEnterRoomRequestMsg.getMessage().getReplyType())){
+            String roomId = RoomIdGenerateUtil.generate(sendUserId, invitedUserId, invitedUserEnterRoomRequestMsg.getMessage().getRoomType());
             EnterRoomPushMsg pushMsg = new EnterRoomPushMsg();
-            pushMsg.setRoomType(invitedUserEnterRoomRequestMsg.getRoomType());
+            pushMsg.setRoomType(invitedUserEnterRoomRequestMsg.getMessage().getRoomType());
             pushMsg.setRoomId(roomId);
 
             // 邀请人
@@ -62,7 +63,6 @@ public class ConfirmInvitationHandle implements BaseImServiceHandle {
             rabbitTemplate.convertAndSend("WSProxyBroadcastConsumeExchange",null,pushProto);
             userDataRedisManger.putRoomId(sendUserId,roomId);
 
-
             // 被邀请人
             token = rtcTokenBuilderUtil.build(invitedUserId.intValue(), roomId);
             pushMsg.setToken(token);
@@ -71,12 +71,11 @@ public class ConfirmInvitationHandle implements BaseImServiceHandle {
 
             userDataRedisManger.putRoomId(invitedUserId,roomId);
             roomHeartBeatRedisManger.generateRedisUserEffectiveTime(roomId,sendUserId,invitedUserId);
-
         }else{
             RefuseInvitationPushMsg pushMsg = new RefuseInvitationPushMsg();
             pushMsg.setInvitedUserId(invitedUserId);
-            pushMsg.setReplyType(invitedUserEnterRoomRequestMsg.getReplyType());
-            pushMsg.setRoomType(invitedUserEnterRoomRequestMsg.getRoomType());
+            pushMsg.setReplyType(invitedUserEnterRoomRequestMsg.getMessage().getReplyType());
+            pushMsg.setRoomType(invitedUserEnterRoomRequestMsg.getMessage().getRoomType());
             BaseProto pushProto = PushProto.buildPush(IMCMD.PUSH_REFUSE_INVITATION, gson.toJson(pushMsg),PushType.PUSH_CONTAIN_USER,Lists.newArrayList(sendUserId));
             rabbitTemplate.convertAndSend("WSProxyBroadcastConsumeExchange",pushProto);
         }

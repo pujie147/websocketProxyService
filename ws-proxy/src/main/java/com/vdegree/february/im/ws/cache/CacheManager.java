@@ -4,6 +4,8 @@ import com.google.common.cache.*;
 import com.google.common.collect.Maps;
 import io.netty.channel.Channel;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Optional;
@@ -22,10 +24,10 @@ import java.util.concurrent.TimeUnit;
 @Log4j2
 public class CacheManager {
     /** 缓存项最大数量 */
-    private final long GUAVA_CACHE_SIZE = 100000;
+    private final long GUAVA_CACHE_SIZE;
 
     /** 缓存时间：秒 */
-    private final long GUAVA_CACHE_SECONDS = 60;
+    private final long GUAVA_CACHE_SECONDS;
 
     private LoadingCache<Long, Channel> CHANNEL_USER_ID = null;
 
@@ -41,7 +43,9 @@ public class CacheManager {
      * @return
      * @throws Exception
      */
-    public CacheManager(RemovalListener removalListener) throws Exception {
+    public CacheManager(RemovalListener<Long, Channel> removalListener,Integer connectionMax,Long idelTime) throws Exception {
+        this.GUAVA_CACHE_SECONDS = idelTime;
+        this.GUAVA_CACHE_SIZE = connectionMax;
         LoadingCache<Long, Channel> cache = CacheBuilder.newBuilder()
                 // 缓存池大小，在缓存项接近该大小时， Guava开始回收旧的缓存项
                 .maximumSize(GUAVA_CACHE_SIZE)

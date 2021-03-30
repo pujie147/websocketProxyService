@@ -15,10 +15,11 @@ spring:
     #虚拟host 可以不设置,使用server默认host
     virtual-host: whispark
 
-app:
-  ws:
+ws:
+  service:
     port: 8090
     idle-time: 60000
+    connection-max: 2
 
 logging:
   level:
