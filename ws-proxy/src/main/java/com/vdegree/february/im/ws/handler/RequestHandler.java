@@ -1,6 +1,7 @@
 package com.vdegree.february.im.ws.handler;
 
 import com.google.gson.Gson;
+import com.vdegree.february.im.api.ws.WSRequestProtoContext;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.api.IMController;
 import com.vdegree.february.im.api.ws.BaseProto;
@@ -33,13 +34,13 @@ public class RequestHandler implements BaseWsProxyHandle {
     private Gson gson;
 
     @Override
-    public void execute(BaseProto proto) {
-        log.info("request Handler : "+proto.toString());
+    public void execute(WSRequestProtoContext wsRequestProtoContext) {
+        log.info("request Handler : "+wsRequestProtoContext.toString());
         Channel channel = null;
-        if(cacheChannelGroupManager.containsUserId(proto.getSendUserId())) {
-            channel = cacheChannelGroupManager.getChannelByUserId(proto.getSendUserId());
+        if(cacheChannelGroupManager.containsUserId(wsRequestProtoContext.getInternalProto().getSendUserId())) {
+            channel = cacheChannelGroupManager.getChannelByUserId(wsRequestProtoContext.getInternalProto().getSendUserId());
             if(channel!=null){
-                channel.writeAndFlush(new TextWebSocketFrame(gson.toJson(proto)));
+//                channel.writeAndFlush(new TextWebSocketFrame(gson.toJson(proto))); TODO
                 return;
             }
         }

@@ -1,8 +1,10 @@
 package com.vdegree.february.im.api.ws;
 
 import com.vdegree.february.im.common.constant.type.ErrorEnum;
+import com.vdegree.february.im.common.constant.type.IMCMD;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.BeanUtils;
 
 /**
  * TODO
@@ -13,19 +15,14 @@ import lombok.extern.log4j.Log4j2;
  */
 @Data
 @Log4j2
-public class ResponseProto<T> extends BaseProto {
+public class ResponseProto<T> extends BaseProto<T> {
 
     private String errorInfo = ErrorEnum.SUCCESS_INFO;
     private Integer errorCode = ErrorEnum.SUCCESS_CODE;
-    private T message;
 
-    public static ResponseProto buildResponse(RequestProto requestProto){
+    public static ResponseProto buildResponse(BaseProto baseProto){
         ResponseProto responseProto = new ResponseProto();
-        responseProto.setCmd(requestProto.getCmd());
-        responseProto.setSendUserId(requestProto.getSendUserId());
-        responseProto.setRequestTime(requestProto.getRequestTime());
-        responseProto.setWsProxyStartTime(requestProto.getWsProxyStartTime());
-        responseProto.setRequestId(responseProto.getRequestId());
+        BeanUtils.copyProperties(baseProto,responseProto);
         return responseProto;
     }
 

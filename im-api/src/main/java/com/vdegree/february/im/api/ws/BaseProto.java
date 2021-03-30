@@ -14,12 +14,10 @@ import java.io.Serializable;
  * @date 2021/3/15 16:47
  */
 @Data
-public class BaseProto implements Serializable {
-    private Long sendUserId;
+public class BaseProto<T> implements Serializable {
+    private IMCMD cmd;
     private Long requestTime;
     private Long responseTime;
     private String requestId;
-    private Long wsProxyStartTime;
-    private IMCMD cmd;
-
+    private T message;
 }

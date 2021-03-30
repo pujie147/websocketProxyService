@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2021/3/19 11:21
  */
 @Log4j2
-public class CacheManager {
+public class UserCacheManager {
     /** 缓存项最大数量 */
     private final long GUAVA_CACHE_SIZE;
 
@@ -37,7 +37,7 @@ public class CacheManager {
      * @return
      * @throws Exception
      */
-    public CacheManager(RemovalListener<Long, Channel> removalListener,Integer connectionMax,Long idelTime) throws Exception {
+    public UserCacheManager(RemovalListener<Long, Channel> removalListener, Integer connectionMax, Long idelTime) throws Exception {
         this.GUAVA_CACHE_SECONDS = idelTime;
         this.GUAVA_CACHE_SIZE = connectionMax;
         LoadingCache<Long, Channel> cache = CacheBuilder.newBuilder()

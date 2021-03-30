@@ -1,6 +1,7 @@
 package com.vdegree.february.im.ws.handler;
 
 import com.vdegree.february.im.api.ws.BaseProto;
+import com.vdegree.february.im.api.ws.WSRequestProtoContext;
 
 /**
  * TODO
@@ -10,5 +11,5 @@ import com.vdegree.february.im.api.ws.BaseProto;
  * @date 2021/3/27 11:00
  */
 public interface BaseWsProxyHandle {
-    void execute(BaseProto reponseProto);
+    void execute(WSRequestProtoContext wsRequestProtoContext);
 }

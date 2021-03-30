@@ -1,6 +1,6 @@
 package com.vdegree.february.im.ws.pipeline;
 
-import com.vdegree.february.im.ws.handler.netty.ChatHandler;
+import com.vdegree.february.im.ws.handler.netty.*;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -10,6 +10,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +27,14 @@ public class WSServerInitialzer extends ChannelInitializer<SocketChannel> {
 
     @Autowired
     private ChatHandler chatHandler;
+    @Autowired
+    private DecodeHandler decodeHandler;
+    @Autowired
+    private EncodeHandler encodeHandler;
+    @Autowired
+    private HeartBeatHandler heartBeatHandler;
+    @Autowired
+    private RoomHeartBeatHandler roomHeartBeatHandler;
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
@@ -53,6 +62,10 @@ public class WSServerInitialzer extends ChannelInitializer<SocketChannel> {
          */
         pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
         // 自定义的handler
+        pipeline.addLast(decodeHandler);
+        pipeline.addLast(encodeHandler);
+        pipeline.addLast(heartBeatHandler);
+        pipeline.addLast(roomHeartBeatHandler);
         pipeline.addLast(chatHandler);
     }
 

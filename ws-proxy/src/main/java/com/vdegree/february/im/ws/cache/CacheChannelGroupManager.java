@@ -3,6 +3,7 @@ package com.vdegree.february.im.ws.cache;
 import com.google.common.cache.RemovalCause;
 import com.google.common.collect.Sets;
 import com.vdegree.february.im.common.cache.HeartBeatRedisManger;
+import com.vdegree.february.im.common.cache.RoomHeartBeatRedisManger;
 import com.vdegree.february.im.common.constant.ChannelAttrConstant;
 import io.netty.channel.*;
 import io.netty.channel.group.ChannelGroupFuture;
@@ -29,7 +30,8 @@ import java.util.*;
 @Log4j2
 public class CacheChannelGroupManager extends DefaultChannelGroup {
     private final EventExecutor executor;
-    private CacheManager cacheManager;
+    private UserCacheManager userCacheManager;
+    private RoomCacheManager roomCacheManager;
     /** 缓存项最大数量 */
     @Value("${ws.service.connection-max}")
     private Long connectionMax;
@@ -39,7 +41,10 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
     private Long idelTime;
 
     @Autowired
-    public HeartBeatRedisManger heartBeatRedisManger;
+    private HeartBeatRedisManger heartBeatRedisManger;
+
+    @Autowired
+    private RoomHeartBeatRedisManger roomHeartBeatRedisManger;
 
     public CacheChannelGroupManager(EventExecutor executor) {
         super(executor);
@@ -52,8 +57,16 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
 
     @PostConstruct
     private void init() throws Exception {
-        cacheManager = new CacheManager(removalNotification ->  {
+        userCacheManager = new UserCacheManager(removalNotification ->  {
             removalNotification.getValue().close();
+            if(RemovalCause.SIZE.equals(removalNotification.getCause())){
+                log.error("删除用户 {} 数据 用户已下线 原因:{} 链接缓存超出范围",removalNotification.getKey(),removalNotification.getCause().name());
+            }else{
+                log.info("删除用户 {} 数据 用户已下线 原因:{}",removalNotification.getKey(),removalNotification.getCause().name());
+            }
+        },connectionMax.intValue(),idelTime);
+
+        roomCacheManager = new RoomCacheManager(removalNotification ->  {
             if(RemovalCause.SIZE.equals(removalNotification.getCause())){
                 log.error("删除用户 {} 数据 用户已下线 原因:{} 链接缓存超出范围",removalNotification.getKey(),removalNotification.getCause().name());
             }else{
@@ -73,7 +86,7 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
      **/
     public boolean add(Long userId,Channel channel) {
         heartBeatRedisManger.generateRedisUserEffectiveTime(userId);
-        cacheManager.put(userId,channel);
+        userCacheManager.put(userId,channel);
         return super.add(channel);
     }
 
@@ -88,9 +101,9 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
     @Override
     public boolean remove(Object o) {
         if (o instanceof ChannelId) {
-            cacheManager.remove(find((ChannelId) o).attr(ChannelAttrConstant.USERID).get());
+            userCacheManager.remove(find((ChannelId) o).attr(ChannelAttrConstant.USERID).get());
         } else if (o instanceof Channel) {
-            cacheManager.remove(((Channel) o).attr(ChannelAttrConstant.USERID).get());
+            userCacheManager.remove(((Channel) o).attr(ChannelAttrConstant.USERID).get());
         }
         return super.remove(o);
     }
@@ -103,9 +116,18 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
      * @Return void
      * @Exception
      **/
-    public boolean refresh(Long userId){
-        if(cacheManager.refreshLocalCacheIdelTime(userId)) {
+    public boolean refreshUser(Long userId){
+        if(userCacheManager.refreshLocalCacheIdelTime(userId)) {
             heartBeatRedisManger.refreshRedisUserAndRoomEffectiveTime(userId);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean refreshRoom(Long userId){
+        if(roomCacheManager.refreshLocalCacheIdelTime(userId)) {
+            String roomId = roomCacheManager.getRoomIdByUserId(userId);
+            roomHeartBeatRedisManger.refreshRedisUserAndRoomEffectiveTime(roomId);
             return true;
         }
         return false;
@@ -121,7 +143,7 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
      * @Exception
      **/
     public Channel getChannelByUserId(Long userId) {
-        return cacheManager.getChannelByUserId(userId);
+        return userCacheManager.getChannelByUserId(userId);
     }
 
     /**
@@ -133,7 +155,7 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
      * @Exception 
      **/
     public Boolean containsUserId(Long userId) {
-        return cacheManager.containsUserId(userId);
+        return userCacheManager.containsUserId(userId);
     }
 
     /**
@@ -159,9 +181,9 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
      **/
     public ChannelGroupFuture writeInUserIdsAndFlush(List<Long> userIds , TextWebSocketFrame message) {
         final ChannelGroupFuture future;
-        Map<Channel, ChannelFuture> futures = new LinkedHashMap<Channel, ChannelFuture>((int) cacheManager.size());
+        Map<Channel, ChannelFuture> futures = new LinkedHashMap<Channel, ChannelFuture>((int) userCacheManager.size());
         userIds.forEach(userId->{
-            Channel c = cacheManager.getChannelByUserId(userId);
+            Channel c = userCacheManager.getChannelByUserId(userId);
             if(c!=null) {
                 futures.put(c, c.writeAndFlush(message));
             }
@@ -181,11 +203,11 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
      **/
     public ChannelGroupFuture writeNoInUserIdsAndFlush(List<Long> userIds , TextWebSocketFrame message) {
         final ChannelGroupFuture future;
-        Map<Channel, ChannelFuture> futures = new LinkedHashMap<Channel, ChannelFuture>((int) cacheManager.size());
+        Map<Channel, ChannelFuture> futures = new LinkedHashMap<Channel, ChannelFuture>((int) userCacheManager.size());
         HashSet<Long> userIdSet = Sets.newHashSet(userIds);
-        cacheManager.userIds().forEach(userId -> {
+        userCacheManager.userIds().forEach(userId -> {
             if(!userIdSet.contains(userId)){//不包含的用户发送
-                Channel c = cacheManager.getChannelByUserId(userId);
+                Channel c = userCacheManager.getChannelByUserId(userId);
                 futures.put(c, c.writeAndFlush(message));
             }
         });

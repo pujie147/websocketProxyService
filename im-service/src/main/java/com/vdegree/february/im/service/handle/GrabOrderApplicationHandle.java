@@ -4,10 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.vdegree.february.im.api.IMController;
-import com.vdegree.february.im.api.ws.BaseProto;
-import com.vdegree.february.im.api.ws.PushProto;
-import com.vdegree.february.im.api.ws.RequestProto;
-import com.vdegree.february.im.api.ws.ResponseProto;
+import com.vdegree.february.im.api.ws.*;
 import com.vdegree.february.im.api.ws.message.push.EnterRoomPushMsg;
 import com.vdegree.february.im.api.ws.message.request.ConfirmEntryRoomRequestMsg;
 import com.vdegree.february.im.api.ws.message.request.GrabOrderApplicationRequestMsg;
@@ -50,32 +47,33 @@ public class GrabOrderApplicationHandle implements BaseImServiceHandle {
 
 
     @Override
-    public ResponseProto execute(RequestProto requestProto) {
-        RequestProto<GrabOrderApplicationRequestMsg> msg = gson.fromJson(requestProto.getJson(),new TypeToken<RequestProto<GrabOrderApplicationRequestMsg>>(){}.getType());
-        Long count = grabOrderRedisManger.incGrabOrderPersonCount(msg.getMessage().getSendUserId(), msg.getMessage().getEnterRoomCode());
-        if(count!=null && count<=1){
-            Long sendUserId = msg.getMessage().getSendUserId();
-            Long invitedUserId = requestProto.getSendUserId();
-            String roomId = RoomIdGenerateUtil.generate(sendUserId, invitedUserId, msg.getMessage().getRoomType());
-            EnterRoomPushMsg pushMsg = new EnterRoomPushMsg();
-            pushMsg.setRoomType(msg.getMessage().getRoomType());
-            pushMsg.setRoomId(roomId);
-
-            // 邀请人
-            String token = rtcTokenBuilderUtil.build(sendUserId.intValue(), roomId);
-            pushMsg.setToken(token);
-            BaseProto pushProto = PushProto.buildPush(IMCMD.PUSH_ENTER_ROOM, gson.toJson(pushMsg), PushType.PUSH_CONTAIN_USER, Lists.newArrayList(sendUserId));
-            rabbitTemplate.convertAndSend(WSPorxyBroadcastConstant.EXCHANGE_NAME,null,pushProto);
-            userDataRedisManger.putRoomId(sendUserId,roomId);
-
-            // 被邀请人
-            token = rtcTokenBuilderUtil.build(invitedUserId.intValue(), roomId);
-            pushMsg.setToken(token);
-            pushProto = PushProto.buildPush(IMCMD.PUSH_ENTER_ROOM, gson.toJson(pushMsg),PushType.PUSH_CONTAIN_USER,Lists.newArrayList(invitedUserId));
-            rabbitTemplate.convertAndSend(WSPorxyBroadcastConstant.EXCHANGE_NAME,null,pushProto);
-
-            return ResponseProto.buildResponse(requestProto);
-        }
-        return ResponseProto.buildResponse(requestProto, ErrorEnum.GRAB_ORDER_END);
+    public ResponseProto execute(WSRequestProtoContext wsRequestProtoContext) {
+//        RequestProto<GrabOrderApplicationRequestMsg> msg = gson.fromJson(requestProto.getJson(),new TypeToken<RequestProto<GrabOrderApplicationRequestMsg>>(){}.getType());
+//        Long count = grabOrderRedisManger.incGrabOrderPersonCount(msg.getMessage().getSendUserId(), msg.getMessage().getEnterRoomCode());
+//        if(count!=null && count<=1){
+//            Long sendUserId = msg.getMessage().getSendUserId();
+//            Long invitedUserId = requestProto.getSendUserId();
+//            String roomId = RoomIdGenerateUtil.generate(sendUserId, invitedUserId, msg.getMessage().getRoomType());
+//            EnterRoomPushMsg pushMsg = new EnterRoomPushMsg();
+//            pushMsg.setRoomType(msg.getMessage().getRoomType());
+//            pushMsg.setRoomId(roomId);
+//
+//            // 邀请人
+//            String token = rtcTokenBuilderUtil.build(sendUserId.intValue(), roomId);
+//            pushMsg.setToken(token);
+//            BaseProto pushProto = PushProto.buildPush(IMCMD.PUSH_ENTER_ROOM, gson.toJson(pushMsg), PushType.PUSH_CONTAIN_USER, Lists.newArrayList(sendUserId));
+//            rabbitTemplate.convertAndSend(WSPorxyBroadcastConstant.EXCHANGE_NAME,null,pushProto);
+//            userDataRedisManger.putRoomId(sendUserId,roomId);
+//
+//            // 被邀请人
+//            token = rtcTokenBuilderUtil.build(invitedUserId.intValue(), roomId);
+//            pushMsg.setToken(token);
+//            pushProto = PushProto.buildPush(IMCMD.PUSH_ENTER_ROOM, gson.toJson(pushMsg),PushType.PUSH_CONTAIN_USER,Lists.newArrayList(invitedUserId));
+//            rabbitTemplate.convertAndSend(WSPorxyBroadcastConstant.EXCHANGE_NAME,null,pushProto);
+//
+//            return ResponseProto.buildResponse(requestProto);
+//        }
+//        return ResponseProto.buildResponse(requestProto, ErrorEnum.GRAB_ORDER_END);
+        return null;
     }
 }

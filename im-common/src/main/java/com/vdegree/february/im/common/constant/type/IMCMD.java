@@ -53,7 +53,7 @@ public enum IMCMD {
     @SerializedName("10006")
     REQUEST_GRAB_ORDER_APPLICATION(10006,"抢单申请","抢单申请"),
     @SerializedName("10011")
-    REQUEST_ROOM_HEARTBEAT(10011,"房间心跳","房间心跳"),
+    REQUEST_ROOM_HEARTBEAT(10011,"房间心跳","房间心跳，保证房间的有效，由房间发起人维持"),
 
 
     /**

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.vdegree.february.im.api.IMController;
 import com.vdegree.february.im.api.ws.BaseProto;
 import com.vdegree.february.im.api.ws.PushProto;
+import com.vdegree.february.im.api.ws.WSRequestProtoContext;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.ws.cache.CacheChannelGroupManager;
 import io.netty.channel.Channel;
@@ -28,22 +29,22 @@ public class PushHandler implements BaseWsProxyHandle {
     private Gson gson;
 
     @Override
-    public void execute(BaseProto proto) {
-        log.info("push Handler : "+proto.toString());
-        PushProto pushProto = PushProto.buildPush(proto);
-        switch (pushProto.getPushType()){
-            case PUSH_ALL_USER:
-                cacheChannelGroupManager.writeALLAndFlush(new TextWebSocketFrame(gson.toJson(pushProto)));
-                break;
-            case PUSH_CONTAIN_USER:
-                cacheChannelGroupManager.writeInUserIdsAndFlush(pushProto.getPushUserIds(),new TextWebSocketFrame(gson.toJson(pushProto)));
-                break;
-            case PUSH_NON_CONTAIN_USER:
-                cacheChannelGroupManager.writeNoInUserIdsAndFlush(pushProto.getPushUserIds(),new TextWebSocketFrame(gson.toJson(pushProto)));
-                break;
-            default:
-                log.error("pushType not exist");
-        }
+    public void execute(WSRequestProtoContext wsRequestProtoContext) {
+        log.info("push Handler : "+wsRequestProtoContext.toString());
+//        PushProto pushProto = PushProto.buildPush(proto);
+//        switch (pushProto.getPushType()){
+//            case PUSH_ALL_USER:
+//                cacheChannelGroupManager.writeALLAndFlush(new TextWebSocketFrame(gson.toJson(pushProto)));
+//                break;
+//            case PUSH_CONTAIN_USER:
+//                cacheChannelGroupManager.writeInUserIdsAndFlush(pushProto.getPushUserIds(),new TextWebSocketFrame(gson.toJson(pushProto)));
+//                break;
+//            case PUSH_NON_CONTAIN_USER:
+//                cacheChannelGroupManager.writeNoInUserIdsAndFlush(pushProto.getPushUserIds(),new TextWebSocketFrame(gson.toJson(pushProto)));
+//                break;
+//            default:
+//                log.error("pushType not exist");
+//        }
 //        log.error("用户：{} 连接已失效 cmd:{}",proto.getSendUserId(),proto.getCmd().getType());
     }
 }

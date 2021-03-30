@@ -14,12 +14,8 @@ import java.util.UUID;
  * @date 2021/3/15 16:26
  */
 @Data
-public class RequestProto<T> extends BaseProto {
+public class RequestProto<T> extends BaseProto<T> {
     private Integer msgRandom;
-    private T message;
-    @JsonIgnore
-    private String json;
-
 
     public static RequestProto buildRequest(IMCMD cmd){
         RequestProto requestProto = new RequestProto();
