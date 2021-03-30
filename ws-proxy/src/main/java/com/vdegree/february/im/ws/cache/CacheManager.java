@@ -1,16 +1,10 @@
 package com.vdegree.february.im.ws.cache;
 
 import com.google.common.cache.*;
-import com.google.common.collect.Maps;
 import io.netty.channel.Channel;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 

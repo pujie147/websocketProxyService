@@ -3,6 +3,7 @@ package com.vdegree.february.im.service.handle;
 import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.vdegree.february.im.common.constant.WSPorxyBroadcastConstant;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.api.IMController;
 import com.vdegree.february.im.api.ws.BaseProto;
@@ -41,7 +42,7 @@ public class InvitedUserEnterRoomHandle implements BaseImServiceHandle {
         pushMsg.setRoomType(invitedUserEnterRoomRequestMsgRequestProto.getMessage().getRoomType());
         pushMsg.setSendUserId(requestProto.getSendUserId());
         PushProto pushProto = PushProto.buildPush(IMCMD.PUSH_INVITED_USER_ENTER_ROOM, gson.toJson(pushMsg), PushType.PUSH_CONTAIN_USER,Lists.newArrayList(invitedUserEnterRoomRequestMsgRequestProto.getMessage().getInvitedUserId()));
-        rabbitTemplate.convertAndSend("WSProxyBroadcastConsumeExchange",null,(BaseProto)pushProto);
+        rabbitTemplate.convertAndSend(WSPorxyBroadcastConstant.EXCHANGE_NAME,null,(BaseProto)pushProto);
         return ResponseProto.buildResponse(requestProto);
     }
 }

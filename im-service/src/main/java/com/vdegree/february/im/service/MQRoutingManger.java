@@ -12,8 +12,8 @@ import java.util.HashMap;
  * @version 1.0
  * @date 2021/3/27 11:51
  */
-public class ControllerManger extends HashMap<Integer, BaseImServiceHandle> {
-    public ControllerManger(int initialCapacity) {
+public class MQRoutingManger extends HashMap<Integer, BaseImServiceHandle> {
+    public MQRoutingManger(int initialCapacity) {
         Maps.newHashMapWithExpectedSize(initialCapacity);
     }
 }

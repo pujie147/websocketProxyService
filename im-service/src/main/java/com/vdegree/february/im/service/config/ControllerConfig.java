@@ -1,7 +1,7 @@
 package com.vdegree.february.im.service.config;
 
 import com.vdegree.february.im.api.IMController;
-import com.vdegree.february.im.service.ControllerManger;
+import com.vdegree.february.im.service.MQRoutingManger;
 import com.vdegree.february.im.service.handle.BaseImServiceHandle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -23,16 +23,15 @@ public class ControllerConfig {
     private ApplicationContext context;
 
     @Bean(name="controllerManager")
-    public ControllerManger controllerManager(){
+    public MQRoutingManger controllerManager(){
         Map<String, Object> beanMap = context.getBeansWithAnnotation(IMController.class);
-        ControllerManger controllerManager = new ControllerManger(beanMap.size());
+        MQRoutingManger controllerManager = new MQRoutingManger(beanMap.size());
         for(String beanName:beanMap.keySet()){
             Object bean = beanMap.get(beanName);
             Class clazz = bean.getClass();
             if (bean instanceof BaseImServiceHandle && clazz.getAnnotation(IMController.class) != null) {
                 IMController imController = (IMController) clazz.getAnnotation(IMController.class);
                 controllerManager.put(imController.cmd().getType(), (BaseImServiceHandle) bean);
-
             }
         }
         return controllerManager;
