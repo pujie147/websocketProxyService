@@ -8,4 +8,5 @@ package com.vdegree.february.im.api.rpc;
  * @date 2021/3/31 17:51
  */
 public interface CallBackAppServceEvent {
+
 }

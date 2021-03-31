@@ -15,7 +15,8 @@ public enum ErrorEnum {
      */
     // 成功无异常
     SUCCESS(ErrorEnum.SUCCESS_CODE,ErrorEnum.SUCCESS_INFO,"没有错误,执行完成"),
-
+    PARAM_ERROR(1,"参数错误","参数错误"),
+    ILLEGAL_REQUEST_ERROR(2,"非法请求错误","非法请求错误"),
 
     /**
      * websocket 异常 websocket 使用
@@ -23,14 +24,14 @@ public enum ErrorEnum {
      */
     // 心跳异常用户失效
     HEART_BEAT_ERROR(1001,"心跳异常","用户失效"),
+    ROOM_HEART_BEAT_ERROR(1002,"房间心跳异常","发起用户或者房主不能维持心跳"),
 
     /**
      * imService 异常 业务异常
      * code范围 1301 - 2000;
      */
     GRAB_ORDER_END(1301,"抢单结束","抢单结束"),
-
-    ILLEGAL_USER(1302,"非法用户","非法用户")
+    ILLEGAL_USER(1302,"非法用户","非法用户"),
 
 
     ;
