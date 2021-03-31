@@ -1,5 +1,7 @@
 package com.vdegree.february.im.service.mqlistener;
 
+import com.google.gson.Gson;
+import com.vdegree.february.im.api.ws.BaseProto;
 import com.vdegree.february.im.api.ws.ProtoContext;
 import com.vdegree.february.im.common.constant.ImServiceQueueConstant;
 import com.vdegree.february.im.common.constant.WSPorxyBroadcastConstant;
@@ -23,11 +25,14 @@ import org.springframework.stereotype.Component;
 @Log4j2
 public class ReceiverWSProxy {
     @Autowired
-    @Qualifier(value = "controllerManager")
-    private MQRoutingManger controllerManager;
+    @Qualifier(value = "routingManger")
+    private MQRoutingManger routingManger;
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private Gson gson;
 
     @RabbitHandler
     @RabbitListener(bindings = @QueueBinding(
@@ -37,7 +42,10 @@ public class ReceiverWSProxy {
     public void process(ProtoContext msg){
         try {
             System.out.println("ReceiverWSProxy: " + msg);
-            BaseImServiceHandle handler = controllerManager.get(msg.getBaseProto().getCmd().getType());
+            if(msg.getBaseProto().getCmd()==null) {
+                msg.setBaseProto(gson.fromJson(msg.getJson(), BaseProto.class));
+            }
+            BaseImServiceHandle handler = routingManger.get(msg.getBaseProto().getCmd().getType());
             if (handler != null) {
                 ProtoContext protoContext = handler.execute(msg);
                 rabbitTemplate.convertAndSend(WSPorxyBroadcastConstant.EXCHANGE_NAME, null, protoContext);
@@ -46,6 +54,6 @@ public class ReceiverWSProxy {
         }catch (Exception e){
             log.error(e);
         }
-//        log.error("未找到cmd:{} , sendUser:{}",msg.getCmd().getType(),msg.getSendUserId());
+        log.error("未找到reqeust userId:{} json :{}",msg.getInternalProto().getSendUserId(),msg.getJson());
     }
 }

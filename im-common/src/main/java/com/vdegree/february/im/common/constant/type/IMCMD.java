@@ -128,10 +128,10 @@ public enum IMCMD {
      * @param IMCMD
      * @return
      */
-    public static IMCMD getConsumeType(IMCMD IMCMD){
-        if(REQUEST.startPoint<= IMCMD.getType() && IMCMD.getType()<=REQUEST.endPoint){
+    public static IMCMD getConsumeType(Integer imCMDType){
+        if(REQUEST.startPoint<= imCMDType && imCMDType<=REQUEST.endPoint){
             return REQUEST;
-        }else if(PUSH.startPoint<= IMCMD.getType() && IMCMD.getType()<=PUSH.endPoint){
+        }else if(PUSH.startPoint<= imCMDType && imCMDType<=PUSH.endPoint){
             return PUSH;
         }
         return null;

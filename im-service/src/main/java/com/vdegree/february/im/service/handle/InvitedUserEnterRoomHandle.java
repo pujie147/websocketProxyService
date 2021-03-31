@@ -6,12 +6,9 @@ import com.google.gson.Gson;
 import com.vdegree.february.im.api.ws.*;
 import com.vdegree.february.im.api.ws.message.push.InvitedUserEnterRoomPushMsg;
 import com.vdegree.february.im.api.ws.message.request.InvitedUserEnterRoomRequestMsg;
-import com.vdegree.february.im.common.constant.WSPorxyBroadcastConstant;
 import com.vdegree.february.im.common.constant.type.IMCMD;
-import com.vdegree.february.im.api.IMController;
-import com.vdegree.february.im.common.constant.type.PushType;
+import com.vdegree.february.im.api.IMCMDRouting;
 import com.vdegree.february.im.service.PushManager;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -24,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @version 1.0
  * @date 2021/3/26 19:56
  */
-@IMController(cmd = IMCMD.REQUEST_INVITED_USER_ENTER_ROOM)
+@IMCMDRouting(cmd = IMCMD.REQUEST_INVITED_USER_ENTER_ROOM)
 public class InvitedUserEnterRoomHandle implements BaseImServiceHandle {
 
     @Autowired

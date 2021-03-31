@@ -1,8 +1,8 @@
 package com.vdegree.february.im.ws.config;
 
-import com.vdegree.february.im.api.IMController;
+import com.vdegree.february.im.api.IMCMDRouting;
 import com.vdegree.february.im.ws.handler.BaseWsProxyHandle;
-import com.vdegree.february.im.ws.handler.ControllerManger;
+import com.vdegree.february.im.ws.handler.RoutingManger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -22,17 +22,17 @@ public class ControllerConfig {
     @Autowired
     private ApplicationContext context;
     @Bean
-    public ControllerManger controllerManager(){
-        Map<String, Object> beanMap = context.getBeansWithAnnotation(IMController.class);
-        ControllerManger controllerManager = new ControllerManger(beanMap.size());
+    public RoutingManger routingManager(){
+        Map<String, Object> beanMap = context.getBeansWithAnnotation(IMCMDRouting.class);
+        RoutingManger routingManger = new RoutingManger(beanMap.size());
         beanMap.keySet().forEach(beanName -> {
             Object bean = beanMap.get(beanName);
             Class clazz = bean.getClass();
-            if (bean instanceof BaseWsProxyHandle && clazz.getAnnotation(IMController.class) != null) {
-                IMController imController = (IMController) clazz.getAnnotation(IMController.class);
-                controllerManager.putHandler(imController.cmd().getType(), (BaseWsProxyHandle) bean);
+            if (bean instanceof BaseWsProxyHandle && clazz.getAnnotation(IMCMDRouting.class) != null) {
+                IMCMDRouting IMCMDRouting = (IMCMDRouting) clazz.getAnnotation(IMCMDRouting.class);
+                routingManger.putHandler(IMCMDRouting.cmd().getType(), (BaseWsProxyHandle) bean);
             }
         });
-        return controllerManager;
+        return routingManger;
     }
 }

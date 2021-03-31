@@ -24,6 +24,9 @@ public class InternalProto implements Serializable {
     private Long wsProxyEndTime;
     private Long imServiceStartTime;
     private Long imServiceEndTime;
-    private IMCMD reponseCMD;
+    /**
+     * {@link IMCMD} 的type为了防止 ws-proxy 没有更新是找不对应
+     */
+    private Integer imCMDType;
 
 }

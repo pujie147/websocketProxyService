@@ -33,6 +33,7 @@ public class PushManager {
         protoContext.getBaseProto().setCmd(imcmd);
         protoContext.getInternalProto().setPustUserIds(pushUserIds);
         protoContext.getInternalProto().setPushType(PushType.PUSH_CONTAIN_USER);
+        protoContext.getInternalProto().setImCMDType(imcmd.getType());
         rabbitTemplate.convertAndSend(WSPorxyBroadcastConstant.EXCHANGE_NAME,null,protoContext);
     }
 
@@ -43,6 +44,7 @@ public class PushManager {
         protoContext.getBaseProto().setCmd(imcmd);
         protoContext.getInternalProto().setPustUserIds(pushUserIds);
         protoContext.getInternalProto().setPushType(pushType);
+        protoContext.getInternalProto().setImCMDType(imcmd.getType());
         rabbitTemplate.convertAndSend(WSPorxyBroadcastConstant.EXCHANGE_NAME,null,protoContext);
     }
 

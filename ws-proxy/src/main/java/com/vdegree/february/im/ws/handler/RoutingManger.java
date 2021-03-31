@@ -11,8 +11,8 @@ import java.util.HashMap;
  * @version 1.0
  * @date 2021/3/27 11:51
  */
-public class ControllerManger extends HashMap<Integer, BaseWsProxyHandle> {
-    public ControllerManger(int initialCapacity) {
+public class RoutingManger extends HashMap<Integer, BaseWsProxyHandle> {
+    public RoutingManger(int initialCapacity) {
         Maps.newHashMapWithExpectedSize(initialCapacity);
     }
 

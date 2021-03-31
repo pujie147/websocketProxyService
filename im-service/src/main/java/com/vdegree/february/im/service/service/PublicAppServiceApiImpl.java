@@ -9,6 +9,7 @@ import com.vdegree.february.im.common.constant.WSPorxyBroadcastConstant;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.common.constant.type.PushType;
 import com.vdegree.february.im.common.constant.type.RoomType;
+import com.vdegree.february.im.service.PushManager;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,13 +28,13 @@ import java.util.Random;
 @Service
 public class PublicAppServiceApiImpl implements PublicAppServiceApi {
     @Autowired
-    private RabbitTemplate rabbitTemplate;
-
-    @Autowired
     private GrabOrderRedisManger grabOrderRedisManger;
 
     @Value("${ws.service.grab-order.effective-time}")
     private Long grabOrderEffectiveTime;
+
+    @Autowired
+    private PushManager pushManager;
 
     @Override
     public void sendGrabOrderApi(Long sendUserId, List<Long> invitationUserIds, RoomType roomType) {
@@ -43,7 +44,6 @@ public class PublicAppServiceApiImpl implements PublicAppServiceApi {
         grabOrderInvitationPushMsg.setSendUserId(sendUserId);
         grabOrderInvitationPushMsg.setEnterRoomCode(enterRoomCode);
         grabOrderRedisManger.buildNewRedisData(sendUserId,enterRoomCode,grabOrderEffectiveTime);
-        ProtoContext protoContext = ProtoContext.buildContext(IMCMD.PUSH_GRAB_ORDER_INVITATION, grabOrderInvitationPushMsg, PushType.PUSH_CONTAIN_USER, invitationUserIds);
-        rabbitTemplate.convertAndSend(WSPorxyBroadcastConstant.EXCHANGE_NAME,null,protoContext);
+        pushManager.pushProto(IMCMD.PUSH_GRAB_ORDER_INVITATION, grabOrderInvitationPushMsg, invitationUserIds);
     }
 }

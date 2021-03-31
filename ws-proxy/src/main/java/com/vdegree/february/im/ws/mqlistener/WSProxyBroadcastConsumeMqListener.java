@@ -4,7 +4,7 @@ import com.vdegree.february.im.api.ws.ProtoContext;
 import com.vdegree.february.im.common.constant.WSPorxyBroadcastConstant;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.ws.handler.BaseWsProxyHandle;
-import com.vdegree.february.im.ws.handler.ControllerManger;
+import com.vdegree.february.im.ws.handler.RoutingManger;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.*;
@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component;
 @Log4j2
 public class WSProxyBroadcastConsumeMqListener {
     @Autowired
-    @Qualifier("controllerManager")
-    private ControllerManger controllerManager;
+    @Qualifier("routingManager")
+    private RoutingManger controllerManager;
 
     @RabbitHandler
     @RabbitListener(bindings = @QueueBinding(
@@ -33,7 +33,7 @@ public class WSProxyBroadcastConsumeMqListener {
     public void process(ProtoContext protoContext){
         System.out.println("WSProxyBroadcastConsumeMqListener: "+ protoContext.toString());
         // 判断消费类型
-        IMCMD consumeType = IMCMD.getConsumeType(protoContext.getBaseProto().getCmd());
+        IMCMD consumeType = IMCMD.getConsumeType(protoContext.getInternalProto().getImCMDType());
         BaseWsProxyHandle handle = controllerManager.getHandler(consumeType.getType());
         if(handle!=null){
             handle.execute(protoContext);

@@ -1,12 +1,13 @@
 package com.vdegree.february.im.api;
 
 import com.vdegree.february.im.common.constant.type.IMCMD;
+import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;
 
 /**
- * TODO
+ * IMCMD 路由标识注解
  *
  * @author DELL
  * @version 1.0
@@ -16,6 +17,8 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Component
-public @interface IMController {
+public @interface IMCMDRouting {
     IMCMD cmd();
+    @AliasFor(annotation = Component.class, attribute = "value")
+    String value() default "";
 }

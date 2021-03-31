@@ -30,6 +30,8 @@ public enum ErrorEnum {
      */
     GRAB_ORDER_END(1301,"抢单结束","抢单结束"),
 
+    ILLEGAL_USER(1302,"非法用户","非法用户")
+
 
     ;
 
