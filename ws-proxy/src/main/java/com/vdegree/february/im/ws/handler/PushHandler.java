@@ -2,13 +2,9 @@ package com.vdegree.february.im.ws.handler;
 
 import com.google.gson.Gson;
 import com.vdegree.february.im.api.IMController;
-import com.vdegree.february.im.api.ws.BaseProto;
-import com.vdegree.february.im.api.ws.PushProto;
-import com.vdegree.february.im.api.ws.WSRequestProtoContext;
+import com.vdegree.february.im.api.ws.WSProtoContext;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.ws.cache.CacheChannelGroupManager;
-import io.netty.channel.Channel;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,8 +25,8 @@ public class PushHandler implements BaseWsProxyHandle {
     private Gson gson;
 
     @Override
-    public void execute(WSRequestProtoContext wsRequestProtoContext) {
-        log.info("push Handler : "+wsRequestProtoContext.toString());
+    public void execute(WSProtoContext wsProtoContext) {
+        log.info("push Handler : "+ wsProtoContext.toString());
 //        PushProto pushProto = PushProto.buildPush(proto);
 //        switch (pushProto.getPushType()){
 //            case PUSH_ALL_USER:

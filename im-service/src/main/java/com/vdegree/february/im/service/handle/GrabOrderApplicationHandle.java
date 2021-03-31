@@ -1,23 +1,12 @@
 package com.vdegree.february.im.service.handle;
 
-import com.google.common.collect.Lists;
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.vdegree.february.im.api.IMController;
 import com.vdegree.february.im.api.ws.*;
-import com.vdegree.february.im.api.ws.message.push.EnterRoomPushMsg;
-import com.vdegree.february.im.api.ws.message.request.ConfirmEntryRoomRequestMsg;
-import com.vdegree.february.im.api.ws.message.request.GrabOrderApplicationRequestMsg;
 import com.vdegree.february.im.common.cache.GrabOrderRedisManger;
-import com.vdegree.february.im.common.cache.RoomDataRedisManger;
 import com.vdegree.february.im.common.cache.UserDataRedisManger;
-import com.vdegree.february.im.common.constant.WSPorxyBroadcastConstant;
-import com.vdegree.february.im.common.constant.type.ErrorEnum;
 import com.vdegree.february.im.common.constant.type.IMCMD;
-import com.vdegree.february.im.common.constant.type.PushType;
-import com.vdegree.february.im.common.utils.RoomIdGenerateUtil;
 import com.vdegree.february.im.common.utils.agora.RtcTokenBuilderUtil;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -47,7 +36,7 @@ public class GrabOrderApplicationHandle implements BaseImServiceHandle {
 
 
     @Override
-    public ResponseProto execute(WSRequestProtoContext wsRequestProtoContext) {
+    public ResponseProto execute(WSProtoContext wsProtoContext) {
 //        RequestProto<GrabOrderApplicationRequestMsg> msg = gson.fromJson(requestProto.getJson(),new TypeToken<RequestProto<GrabOrderApplicationRequestMsg>>(){}.getType());
 //        Long count = grabOrderRedisManger.incGrabOrderPersonCount(msg.getMessage().getSendUserId(), msg.getMessage().getEnterRoomCode());
 //        if(count!=null && count<=1){

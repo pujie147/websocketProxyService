@@ -19,5 +19,4 @@ public class BaseProto<T> implements Serializable {
     private Long requestTime;
     private Long responseTime;
     private String requestId;
-    private T message;
 }

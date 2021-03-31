@@ -1,15 +1,9 @@
 package com.vdegree.february.im.service.handle;
 
-import com.google.common.collect.Lists;
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.vdegree.february.im.api.ws.*;
-import com.vdegree.february.im.common.constant.WSPorxyBroadcastConstant;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.api.IMController;
-import com.vdegree.february.im.api.ws.message.push.InvitedUserEnterRoomPushMsg;
-import com.vdegree.february.im.api.ws.message.request.InvitedUserEnterRoomRequestMsg;
-import com.vdegree.february.im.common.constant.type.PushType;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,7 +26,7 @@ public class InvitedUserEnterRoomHandle implements BaseImServiceHandle {
     private Gson gson;
 
     @Override
-    public ResponseProto execute(WSRequestProtoContext wsRequestProtoContext) {
+    public ResponseProto execute(WSProtoContext wsProtoContext) {
 //        RequestProto<InvitedUserEnterRoomRequestMsg> invitedUserEnterRoomRequestMsgRequestProto = gson.fromJson(requestProto.getJson(), new TypeToken<RequestProto<InvitedUserEnterRoomRequestMsg>>(){}.getType());
 //
 //        InvitedUserEnterRoomPushMsg pushMsg = new InvitedUserEnterRoomPushMsg();

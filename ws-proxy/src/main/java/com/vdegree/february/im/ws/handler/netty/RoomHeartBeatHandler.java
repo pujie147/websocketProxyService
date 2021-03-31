@@ -8,26 +8,16 @@ package com.vdegree.february.im.ws.handler.netty;
  * @date 2021/3/15 15:50
  */
 
-import com.google.gson.Gson;
-import com.vdegree.february.im.api.ws.ResponseProto;
 import com.vdegree.february.im.api.ws.RoomHeartBeatProto;
-import com.vdegree.february.im.api.ws.WSRequestProtoContext;
 import com.vdegree.february.im.common.cache.RoomHeartBeatRedisManger;
-import com.vdegree.february.im.common.constant.ChannelAttrConstant;
-import com.vdegree.february.im.common.constant.type.ErrorEnum;
-import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.ws.cache.CacheChannelGroupManager;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import static com.vdegree.february.im.common.constant.type.IMCMD.REQUEST_ROOM_HEARTBEAT;
 
 /**
  * @Description: 处理消息的handler

@@ -14,19 +14,19 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Data
-public class WSRequestProtoContext {
+public class WSProtoContext {
     @Autowired
     private Gson gson;
-    private BaseProto baseProto;
-    private RequestProto requestProto;
-    private InternalProto internalProto;
+    private BaseProto baseProto = new BaseProto();
+    private RequestProto requestProto = new RequestProto();
+    private InternalProto internalProto = new InternalProto();
     private String json;
 
-    public WSRequestProtoContext buildContext(String json){
-        WSRequestProtoContext wsRequestProtoContext = new WSRequestProtoContext();
-        wsRequestProtoContext.baseProto = gson.fromJson(json,BaseProto.class);
+    public WSProtoContext buildContext(String json){
+        WSProtoContext wsProtoContext = new WSProtoContext();
+        wsProtoContext.baseProto = gson.fromJson(json,BaseProto.class);
         this.json = json;
-        return wsRequestProtoContext;
+        return wsProtoContext;
     }
 
     public HeartBeatProto buildHeartBeatProto(){

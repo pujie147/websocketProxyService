@@ -1,9 +1,8 @@
 package com.vdegree.february.im.ws.mqlistener;
 
-import com.vdegree.february.im.api.ws.WSRequestProtoContext;
+import com.vdegree.february.im.api.ws.WSProtoContext;
 import com.vdegree.february.im.common.constant.WSPorxyBroadcastConstant;
 import com.vdegree.february.im.common.constant.type.IMCMD;
-import com.vdegree.february.im.api.ws.BaseProto;
 import com.vdegree.february.im.ws.handler.BaseWsProxyHandle;
 import com.vdegree.february.im.ws.handler.ControllerManger;
 import lombok.extern.log4j.Log4j2;
@@ -31,15 +30,15 @@ public class WSProxyBroadcastConsumeMqListener {
             value = @Queue(value = WSPorxyBroadcastConstant.QUEUE_NAME),
             exchange = @Exchange(value = WSPorxyBroadcastConstant.EXCHANGE_NAME, type = ExchangeTypes.FANOUT),
             key = WSPorxyBroadcastConstant.ROUTING_KEY))
-    public void process(WSRequestProtoContext wsRequestProtoContext){
-        System.out.println("WSProxyBroadcastConsumeMqListener: "+wsRequestProtoContext.toString());
+    public void process(WSProtoContext wsProtoContext){
+        System.out.println("WSProxyBroadcastConsumeMqListener: "+ wsProtoContext.toString());
         // 判断消费类型
-        IMCMD consumeType = IMCMD.getConsumeType(wsRequestProtoContext.getBaseProto().getCmd());
+        IMCMD consumeType = IMCMD.getConsumeType(wsProtoContext.getBaseProto().getCmd());
         BaseWsProxyHandle handle = controllerManager.getHandler(consumeType.getType());
         if(handle!=null){
-            handle.execute(wsRequestProtoContext);
+            handle.execute(wsProtoContext);
             return;
         }
-        log.error("找不到对应hanlde cmd :{} user:{}",wsRequestProtoContext.getBaseProto().getCmd().getType(),wsRequestProtoContext.getInternalProto().getSendUserId());
+        log.error("找不到对应hanlde cmd :{} user:{}", wsProtoContext.getBaseProto().getCmd().getType(), wsProtoContext.getInternalProto().getSendUserId());
     }
 }

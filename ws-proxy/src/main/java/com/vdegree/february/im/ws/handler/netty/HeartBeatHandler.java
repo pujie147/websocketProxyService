@@ -4,7 +4,7 @@ package com.vdegree.february.im.ws.handler.netty;
 
 import com.vdegree.february.im.api.ws.HeartBeatProto;
 import com.vdegree.february.im.api.ws.ResponseProto;
-import com.vdegree.february.im.api.ws.WSRequestProtoContext;
+import com.vdegree.february.im.api.ws.WSProtoContext;
 import com.vdegree.february.im.common.constant.ChannelAttrConstant;
 import com.vdegree.february.im.common.constant.type.ErrorEnum;
 import com.vdegree.february.im.ws.cache.CacheChannelGroupManager;
@@ -34,7 +34,7 @@ public class HeartBeatHandler extends SimpleChannelInboundHandler<HeartBeatProto
     RabbitTemplate rabbitTemplate;
 
     @Autowired
-    private WSRequestProtoContext wsRequestProtoContext;
+    private WSProtoContext wsProtoContext;
 
 //    @Override
 //    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {

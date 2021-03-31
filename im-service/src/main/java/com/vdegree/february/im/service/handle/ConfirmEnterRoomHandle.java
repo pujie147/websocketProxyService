@@ -1,15 +1,12 @@
 package com.vdegree.february.im.service.handle;
 
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-import com.vdegree.february.im.api.ws.WSRequestProtoContext;
-import com.vdegree.february.im.api.ws.message.request.ConfirmEntryRoomRequestMsg;
+import com.vdegree.february.im.api.ws.WSProtoContext;
 import com.vdegree.february.im.common.cache.RoomDataRedisManger;
 import com.vdegree.february.im.common.cache.UserDataRedisManger;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.api.IMController;
 import com.vdegree.february.im.api.ws.ResponseProto;
-import com.vdegree.february.im.api.ws.RequestProto;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -33,7 +30,7 @@ public class ConfirmEnterRoomHandle implements BaseImServiceHandle {
     private Gson gson;
 
     @Override
-    public ResponseProto execute(WSRequestProtoContext wsRequestProtoContext) {
+    public ResponseProto execute(WSProtoContext wsProtoContext) {
 //        RequestProto<ConfirmEntryRoomRequestMsg> msg = gson.fromJson(requestProto.getJson(), new TypeToken<RequestProto<ConfirmEntryRoomRequestMsg>>(){}.getType());
 //        userDataRedisManger.putRoomId(requestProto.getSendUserId(),msg.getMessage().getRoomId());
 //        if(roomDataRedisManger.getSendUserId(msg.getMessage().getRoomId()).compareTo(requestProto.getSendUserId())==0){

@@ -1,8 +1,7 @@
 package com.vdegree.february.im.service.handle;
 
 import com.vdegree.february.im.api.ws.ResponseProto;
-import com.vdegree.february.im.api.ws.RequestProto;
-import com.vdegree.february.im.api.ws.WSRequestProtoContext;
+import com.vdegree.february.im.api.ws.WSProtoContext;
 
 /**
  * TODO
@@ -12,5 +11,5 @@ import com.vdegree.february.im.api.ws.WSRequestProtoContext;
  * @date 2021/3/27 11:20
  */
 public interface BaseImServiceHandle {
-    ResponseProto execute(WSRequestProtoContext wsRequestProtoContext);
+    ResponseProto execute(WSProtoContext wsProtoContext);
 }

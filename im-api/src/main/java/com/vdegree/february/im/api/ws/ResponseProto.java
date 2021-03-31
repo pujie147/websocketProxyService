@@ -16,7 +16,7 @@ import org.springframework.beans.BeanUtils;
 @Data
 @Log4j2
 public class ResponseProto<T> extends BaseProto<T> {
-
+    private T message;
     private String errorInfo = ErrorEnum.SUCCESS_INFO;
     private Integer errorCode = ErrorEnum.SUCCESS_CODE;
 
@@ -32,9 +32,10 @@ public class ResponseProto<T> extends BaseProto<T> {
     }
 
     public static ResponseProto buildResponse(RequestProto requestProto, ErrorEnum errorEnum){
-        ResponseProto responseProto = buildResponse(requestProto);
-        responseProto.setError(errorEnum);
-        return responseProto;
+//        ResponseProto responseProto = buildResponse(requestProto);
+//        responseProto.setError(errorEnum);
+//        return responseProto;
+        return null;
     }
 
 }

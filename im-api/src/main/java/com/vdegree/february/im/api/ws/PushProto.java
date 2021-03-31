@@ -20,7 +20,7 @@ import java.util.UUID;
 @Data
 @Log4j2
 public class PushProto<T> extends BaseProto<T> {
-
+    private T message;
     private PushProto(){}
 
     public static <T>PushProto buildPush(IMCMD imcmd,T message,PushType pushType,List<Long> userIds){
