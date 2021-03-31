@@ -1,9 +1,16 @@
 package com.vdegree.february.im.service.handle;
 
+import com.google.common.collect.Lists;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.vdegree.february.im.api.ws.*;
+import com.vdegree.february.im.api.ws.message.push.InvitedUserEnterRoomPushMsg;
+import com.vdegree.february.im.api.ws.message.request.InvitedUserEnterRoomRequestMsg;
+import com.vdegree.february.im.common.constant.WSPorxyBroadcastConstant;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.api.IMController;
+import com.vdegree.february.im.common.constant.type.PushType;
+import com.vdegree.february.im.service.PushManager;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,22 +26,21 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @IMController(cmd = IMCMD.REQUEST_INVITED_USER_ENTER_ROOM)
 public class InvitedUserEnterRoomHandle implements BaseImServiceHandle {
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    private PushManager pushManager;
     @Autowired
     private Gson gson;
 
     @Override
-    public ResponseProto execute(WSProtoContext wsProtoContext) {
-//        RequestProto<InvitedUserEnterRoomRequestMsg> invitedUserEnterRoomRequestMsgRequestProto = gson.fromJson(requestProto.getJson(), new TypeToken<RequestProto<InvitedUserEnterRoomRequestMsg>>(){}.getType());
-//
-//        InvitedUserEnterRoomPushMsg pushMsg = new InvitedUserEnterRoomPushMsg();
-//        pushMsg.setRoomType(invitedUserEnterRoomRequestMsgRequestProto.getMessage().getRoomType());
-//        pushMsg.setSendUserId(requestProto.getSendUserId());
-//        PushProto pushProto = PushProto.buildPush(IMCMD.PUSH_INVITED_USER_ENTER_ROOM, gson.toJson(pushMsg), PushType.PUSH_CONTAIN_USER,Lists.newArrayList(invitedUserEnterRoomRequestMsgRequestProto.getMessage().getInvitedUserId()));
-//        rabbitTemplate.convertAndSend(WSPorxyBroadcastConstant.EXCHANGE_NAME,null,(BaseProto)pushProto);
-//        return ResponseProto.buildResponse(requestProto);
-        return null;
+    public ProtoContext execute(ProtoContext protoContext) {
+        RequestProto<InvitedUserEnterRoomRequestMsg> invitedUserEnterRoomRequestMsg = gson.fromJson(protoContext.getJson(),new TypeToken<RequestProto<InvitedUserEnterRoomRequestMsg>>(){}.getType());
+        InvitedUserEnterRoomPushMsg pushMsg = new InvitedUserEnterRoomPushMsg();
+        pushMsg.setRoomType(invitedUserEnterRoomRequestMsg.getMessage().getRoomType());
+        pushMsg.setSendUserId(protoContext.getInternalProto().getSendUserId());
+        pushManager.pushProto(IMCMD.PUSH_INVITED_USER_ENTER_ROOM,pushMsg,Lists.newArrayList(invitedUserEnterRoomRequestMsg.getMessage().getInvitedUserId()));
+        protoContext.buildSuccessResponseProto();
+        return protoContext;
     }
+
 }

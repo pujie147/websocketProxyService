@@ -1,8 +1,10 @@
 package com.vdegree.february.im.api.ws;
 
+import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.common.constant.type.PushType;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -13,7 +15,7 @@ import java.util.List;
  * @date 2021/3/30 18:11
  */
 @Data
-public class InternalProto {
+public class InternalProto implements Serializable {
     private Long sendUserId;
     private List<Long> pustUserIds;
     private PushType pushType;
@@ -22,5 +24,6 @@ public class InternalProto {
     private Long wsProxyEndTime;
     private Long imServiceStartTime;
     private Long imServiceEndTime;
+    private IMCMD reponseCMD;
 
 }

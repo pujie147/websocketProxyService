@@ -5,6 +5,7 @@ import com.vdegree.february.im.common.constant.type.IMCMD;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.repository.config.RepositoryNameSpaceHandler;
 
 /**
  * TODO
@@ -15,7 +16,7 @@ import org.springframework.beans.BeanUtils;
  */
 @Data
 @Log4j2
-public class ResponseProto<T> extends BaseProto<T> {
+public class ResponseProto<T> extends BaseProto {
     private T message;
     private String errorInfo = ErrorEnum.SUCCESS_INFO;
     private Integer errorCode = ErrorEnum.SUCCESS_CODE;
@@ -31,11 +32,10 @@ public class ResponseProto<T> extends BaseProto<T> {
         errorCode = errorEnum.getErrorCode();
     }
 
-    public static ResponseProto buildResponse(RequestProto requestProto, ErrorEnum errorEnum){
-//        ResponseProto responseProto = buildResponse(requestProto);
-//        responseProto.setError(errorEnum);
-//        return responseProto;
-        return null;
+    public static ResponseProto buildResponse(BaseProto baseProto, ErrorEnum errorEnum){
+        ResponseProto responseProto = buildResponse(baseProto);
+        responseProto.setError(errorEnum);
+        return responseProto;
     }
 
 }

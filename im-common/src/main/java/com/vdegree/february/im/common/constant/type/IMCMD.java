@@ -38,7 +38,7 @@ public enum IMCMD {
 
 
     /**
-     *  reqeust 请求是 client 发给 service的协议 10000 - 19999
+     *  request 请求是 client 发给 service的协议 10000 - 19999
      */
     @SerializedName("10001")
     REQUEST_HEARTBEAT(10001,"用户心跳","用户心跳"),

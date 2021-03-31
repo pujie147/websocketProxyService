@@ -1,6 +1,7 @@
 package com.vdegree.february.im.service.service;
 
 import com.vdegree.february.im.api.rpc.PublicAppServiceApi;
+import com.vdegree.february.im.api.ws.ProtoContext;
 import com.vdegree.february.im.api.ws.PushProto;
 import com.vdegree.february.im.api.ws.message.push.GrabOrderInvitationPushMsg;
 import com.vdegree.february.im.common.cache.GrabOrderRedisManger;
@@ -42,7 +43,7 @@ public class PublicAppServiceApiImpl implements PublicAppServiceApi {
         grabOrderInvitationPushMsg.setSendUserId(sendUserId);
         grabOrderInvitationPushMsg.setEnterRoomCode(enterRoomCode);
         grabOrderRedisManger.buildNewRedisData(sendUserId,enterRoomCode,grabOrderEffectiveTime);
-        PushProto pushProto = PushProto.buildPush(IMCMD.PUSH_GRAB_ORDER_INVITATION, grabOrderInvitationPushMsg, PushType.PUSH_CONTAIN_USER, invitationUserIds);
-        rabbitTemplate.convertAndSend(WSPorxyBroadcastConstant.EXCHANGE_NAME,null,pushProto);
+        ProtoContext protoContext = ProtoContext.buildContext(IMCMD.PUSH_GRAB_ORDER_INVITATION, grabOrderInvitationPushMsg, PushType.PUSH_CONTAIN_USER, invitationUserIds);
+        rabbitTemplate.convertAndSend(WSPorxyBroadcastConstant.EXCHANGE_NAME,null,protoContext);
     }
 }

@@ -4,7 +4,7 @@ package com.vdegree.february.im.ws.handler.netty;
 
 import com.vdegree.february.im.api.ws.HeartBeatProto;
 import com.vdegree.february.im.api.ws.ResponseProto;
-import com.vdegree.february.im.api.ws.WSProtoContext;
+import com.vdegree.february.im.api.ws.ProtoContext;
 import com.vdegree.february.im.common.constant.ChannelAttrConstant;
 import com.vdegree.february.im.common.constant.type.ErrorEnum;
 import com.vdegree.february.im.ws.cache.CacheChannelGroupManager;
@@ -32,20 +32,6 @@ public class HeartBeatHandler extends SimpleChannelInboundHandler<HeartBeatProto
 
     @Autowired
     RabbitTemplate rabbitTemplate;
-
-    @Autowired
-    private WSProtoContext wsProtoContext;
-
-//    @Override
-//    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-//        // 握手完成 进行初始化
-//        if (evt instanceof WebSocketServerProtocolHandler.HandshakeComplete) {
-//            cacheChannelGroupManager.add(ctx.channel().attr(ChannelAttrConstant.USERID).get(),ctx.channel());
-//        }
-//        super.userEventTriggered(ctx, evt);
-//    }
-
-
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, HeartBeatProto msg)

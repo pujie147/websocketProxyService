@@ -19,11 +19,11 @@ import java.util.UUID;
  */
 @Data
 @Log4j2
-public class PushProto<T> extends BaseProto<T> {
+public class PushProto<T> extends BaseProto {
     private T message;
     private PushProto(){}
 
-    public static <T>PushProto buildPush(IMCMD imcmd,T message,PushType pushType,List<Long> userIds){
+    public static <T>PushProto buildPush(IMCMD imcmd,T message){
         PushProto pushProto = new PushProto();
         pushProto.setRequestId(UUID.randomUUID().toString());
         pushProto.setCmd(imcmd);
@@ -31,13 +31,5 @@ public class PushProto<T> extends BaseProto<T> {
         pushProto.setRequestTime(System.currentTimeMillis());
         return pushProto;
     }
-
-    public static PushProto buildPush(BaseProto baseProto){
-        if(baseProto instanceof PushProto){
-            return (PushProto) baseProto;
-        }
-        return null;
-    }
-
 
 }

@@ -17,7 +17,7 @@ spring:
 
 ws:
   service:
-    grab-order：
+    grab-order:
       effective-time: 60
 
 logging:

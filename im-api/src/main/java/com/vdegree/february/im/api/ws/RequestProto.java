@@ -3,6 +3,8 @@ package com.vdegree.february.im.api.ws;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import lombok.Data;
 
+import java.io.Serializable;
+
 
 /**
  * TODO
@@ -12,7 +14,7 @@ import lombok.Data;
  * @date 2021/3/15 16:26
  */
 @Data
-public class RequestProto<T> {
+public class RequestProto<T> implements Serializable {
     private Integer msgRandom;
     private T message;
 

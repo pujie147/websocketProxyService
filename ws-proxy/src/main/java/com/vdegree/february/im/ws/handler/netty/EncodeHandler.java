@@ -30,6 +30,7 @@ public class EncodeHandler extends MessageToMessageEncoder<BaseProto> {
     private Gson gson;
     @Override
     protected void encode(ChannelHandlerContext ctx, BaseProto baseProto, List<Object> out) throws Exception {
+        baseProto.setResponseTime(System.currentTimeMillis());
         out.add(new TextWebSocketFrame(gson.toJson(baseProto)));
     }
 }
