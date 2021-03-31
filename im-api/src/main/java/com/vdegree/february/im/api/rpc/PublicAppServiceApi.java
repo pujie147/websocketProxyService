@@ -13,5 +13,7 @@ import java.util.List;
  */
 
 public interface PublicAppServiceApi {
-    void sendGrabOrderApi(Long sendUserId, List<Long> invitationUserIds, RoomType roomType);
+    boolean sendGrabOrderApi(Long sendUserId, List<Long> invitationUserIds, RoomType roomType);
+
+    boolean pushQuitRoomApi(String roomId, RoomType roomType);
 }

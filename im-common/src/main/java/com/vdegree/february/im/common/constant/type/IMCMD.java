@@ -69,7 +69,9 @@ public enum IMCMD {
     @SerializedName("20004")
     PUSH_QUIT_ROOM(20004,"退出房间","退出房间"),
     @SerializedName("20005")
-    PUSH_CONNECTION_CLOSE(20005,"链接关闭","链接关闭"),
+    SERVICE_EVENT(20005,"服务器事件","服务器事件"),
+//    @SerializedName("20005")
+//    PUSH_CONNECTION_CLOSE(20005,"链接关闭","链接关闭"),
     @SerializedName("20006")
     PUSH_GRAB_ORDER_INVITATION(20006,"抢单邀请","链接关闭"),
     @SerializedName("20007")
