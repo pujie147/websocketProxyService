@@ -1,6 +1,5 @@
 package com.vdegree.february.im.common.cache;
 
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -14,12 +13,9 @@ import org.springframework.stereotype.Component;
  * @date 2021/3/25 17:07
  */
 @Component
-public class RoomHeartBeatRedisManger {
+class RoomHeartBeatRedisManger {
     @Autowired
     private RedisTemplate redisTemplate;
-
-    @Autowired
-    private RoomDataRedisManger roomDataRedisManger;
 
     @Value("${app.ws.idle-time:60000}")
     private Long idleTime;
@@ -28,18 +24,26 @@ public class RoomHeartBeatRedisManger {
         return System.currentTimeMillis()+idleTime;
     }
 
-    private String USER_EFFECTIVE_REDIS_KEY = "IM_ROOM_EFFECTIVE_TIME";
+    private String ROOM_EFFECTIVE_REDIS_KEY = "IM_ROOM_EFFECTIVE_TIME";
 
-    public void generateRedisUserEffectiveTime(String roomId,Long sendUserId,Long invitedUserId){
-        redisTemplate.opsForZSet().add(USER_EFFECTIVE_REDIS_KEY,roomId,idleTime());
-        roomDataRedisManger.buildNewRedisData(roomId,sendUserId,invitedUserId,System.currentTimeMillis());
+    public void generateRedisUserEffectiveTime(String roomId){
+        redisTemplate.opsForZSet().add(ROOM_EFFECTIVE_REDIS_KEY,roomId,idleTime());
     }
 
-    public void refreshRedisUserAndRoomEffectiveTime(String roomId){
-        redisTemplate.opsForZSet().add(USER_EFFECTIVE_REDIS_KEY,roomId,idleTime());
-//        redisTemplate.opsForHash().get(USER_SESSION_DATA_REDIS_KEY,userId); // 如果用户信息类有房间id该用户在视频
-        //在视频的用户刷新 房间有效时间
+    public boolean refreshRedisRoomEffectiveTime(String roomId){
+        if(isUserEffective(roomId)) {
+            redisTemplate.opsForZSet().add(ROOM_EFFECTIVE_REDIS_KEY, roomId, idleTime());
+            return true;
+        }
+        return false;
     }
 
+    public boolean isUserEffective(String roomId){
+        Long effectiveTime = redisTemplate.opsForZSet().rank(ROOM_EFFECTIVE_REDIS_KEY,roomId);
+        if(System.currentTimeMillis()<=effectiveTime){
+            return true;
+        }
+        return false;
+    }
 
 }

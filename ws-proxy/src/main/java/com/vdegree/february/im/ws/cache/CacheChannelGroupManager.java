@@ -2,8 +2,8 @@ package com.vdegree.february.im.ws.cache;
 
 import com.google.common.cache.RemovalCause;
 import com.google.common.collect.Sets;
-import com.vdegree.february.im.common.cache.HeartBeatRedisManger;
-import com.vdegree.february.im.common.cache.RoomHeartBeatRedisManger;
+import com.vdegree.february.im.common.cache.RoomDataRedisManger;
+import com.vdegree.february.im.common.cache.UserDataRedisManger;
 import com.vdegree.february.im.common.constant.ChannelAttrConstant;
 import io.netty.channel.*;
 import io.netty.channel.group.ChannelGroupFuture;
@@ -12,6 +12,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import lombok.extern.log4j.Log4j2;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -41,10 +42,15 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
     private Long idelTime;
 
     @Autowired
-    private HeartBeatRedisManger heartBeatRedisManger;
-
+    private UserDataRedisManger userDataRedisManger;
     @Autowired
-    private RoomHeartBeatRedisManger roomHeartBeatRedisManger;
+    private RoomDataRedisManger roomDataRedisManger;
+
+
+
+
+//    @Autowired
+//    private RoomHeartBeatRedisManger roomHeartBeatRedisManger;
 
     public CacheChannelGroupManager(EventExecutor executor) {
         super(executor);
@@ -64,6 +70,7 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
             }else{
                 log.info("删除用户 {} 数据 用户已下线 原因:{}",removalNotification.getKey(),removalNotification.getCause().name());
             }
+            userDataRedisManger.del(removalNotification.getKey());
         },connectionMax.intValue(),idelTime);
 
         roomCacheManager = new RoomCacheManager(removalNotification ->  {
@@ -72,6 +79,7 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
             }else{
                 log.info("删除用户 {} 数据 用户已下线 原因:{}",removalNotification.getKey(),removalNotification.getCause().name());
             }
+//            RoomDataRedisManger.del(removalNotification.getKey());
         },connectionMax.intValue(),idelTime);
     }
 
@@ -85,7 +93,8 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
      * @Exception
      **/
     public boolean add(Long userId,Channel channel) {
-        heartBeatRedisManger.generateRedisUserEffectiveTime(userId);
+        userDataRedisManger.buildNewRedisData(userId);
+//        userDataRedisManger.generateRedisUserEffectiveTime(userId);
         userCacheManager.put(userId,channel);
         return super.add(channel);
     }
@@ -118,7 +127,7 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
      **/
     public boolean refreshUser(Long userId){
         if(userCacheManager.refreshLocalCacheIdelTime(userId)) {
-            heartBeatRedisManger.refreshRedisUserAndRoomEffectiveTime(userId);
+            userDataRedisManger.refreshRedisUserEffectiveTime(userId);
             return true;
         }
         return false;
@@ -127,10 +136,15 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
     public boolean refreshRoom(Long userId){
         if(roomCacheManager.refreshLocalCacheIdelTime(userId)) {
             String roomId = roomCacheManager.getRoomIdByUserId(userId);
-            roomHeartBeatRedisManger.refreshRedisUserAndRoomEffectiveTime(roomId);
-            return true;
+            if(roomDataRedisManger.refreshRedisUserEffectiveTime(roomId)){
+                return true;
+            }
         }
         return false;
+    }
+
+    public String getRoomIdByUserId(Long userId){
+        return roomCacheManager.getRoomIdByUserId(userId);
     }
 
     /**

@@ -9,15 +9,15 @@ package com.vdegree.february.im.ws.handler.netty;
  */
 
 import com.vdegree.february.im.api.ws.RoomHeartBeatProto;
-import com.vdegree.february.im.common.cache.RoomHeartBeatRedisManger;
+import com.vdegree.february.im.common.cache.RoomDataRedisManger;
+import com.vdegree.february.im.common.cache.UserDataRedisManger;
 import com.vdegree.february.im.common.constant.ChannelAttrConstant;
+import com.vdegree.february.im.common.constant.type.ErrorEnum;
 import com.vdegree.february.im.ws.cache.CacheChannelGroupManager;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.util.Attribute;
 import lombok.extern.log4j.Log4j2;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,7 +33,10 @@ import org.springframework.stereotype.Component;
 public class RoomHeartBeatHandler extends SimpleChannelInboundHandler<RoomHeartBeatProto> {
 
     @Autowired
-    private RoomHeartBeatRedisManger roomHeartBeatRedisManger;
+    private RoomDataRedisManger roomDataRedisManger;
+
+    @Autowired
+    private UserDataRedisManger userDataRedisManger;
 
     @Autowired
     private CacheChannelGroupManager cacheChannelGroupManager;
@@ -48,8 +51,16 @@ public class RoomHeartBeatHandler extends SimpleChannelInboundHandler<RoomHeartB
     protected void channelRead0(ChannelHandlerContext ctx, RoomHeartBeatProto msg)
             throws Exception {
         Long userId = ctx.channel().attr(ChannelAttrConstant.USERID).get();
-        cacheChannelGroupManager.refreshRoom(userId);
-        //TODO 把Hearbeat redis Manager 和 UserData RedisManger 合并 同一处理 1、生成 2、刷新 3、查询（判断用户是否有效） 4、失效
-        //TODO 把RoomHearbeat redis Manager 和 RoomData RedisManger 合并 同一处理 1、生成 2、刷新 3、查询（判断用户是否有效） 4、失效
+        if(cacheChannelGroupManager.refreshRoom(userId)){
+            log.debug("用户：{} 心跳成功",userId);
+            ctx.channel().writeAndFlush(msg.buildResponseProto());
+        }else{
+            log.error("用户：{} 心跳失败 用户失效",userId);
+            ctx.channel().writeAndFlush(msg.buildResponseProto(ErrorEnum.ROOM_HEART_BEAT_ERROR)).addListener(future -> {
+                if(future.isSuccess()){
+                    ctx.close();
+                }
+            });
+        }
     }
 }

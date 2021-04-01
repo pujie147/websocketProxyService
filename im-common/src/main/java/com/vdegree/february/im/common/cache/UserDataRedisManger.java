@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 public class UserDataRedisManger {
     @Autowired
     private RedisTemplate redisTemplate;
+    @Autowired
+    private HeartBeatRedisManger heartBeatRedisManger;
 
     private String USER_SESSION_DATA_REDIS_KEY = "IM_USER_SESSION_DATA";
 
@@ -26,23 +28,44 @@ public class UserDataRedisManger {
         return USER_SESSION_DATA_REDIS_KEY+"_"+userId;
     }
 
-    public void buildNewRedisData(Long userId,Long connectStartTime){
+    public void buildNewRedisData(Long userId){
+        Long connectStartTime = System.currentTimeMillis();
         redisTemplate.opsForHash().put(getKey(userId),FIELD_CONNECT_START_TIME,connectStartTime);
+        heartBeatRedisManger.generateRedisUserEffectiveTime(userId);
     }
 
     public Long getConnectStartTime(Long userId){
-        return (Long)redisTemplate.opsForHash().get(getKey(userId),FIELD_CONNECT_START_TIME);
+        if(heartBeatRedisManger.isUserEffective(userId)) {
+            return (Long) redisTemplate.opsForHash().get(getKey(userId), FIELD_CONNECT_START_TIME);
+        }
+        return null;
     }
 
     public void putRoomId(Long userId,String roomId){
-        redisTemplate.opsForHash().put(getKey(userId),FIELD_ROOM_ID,roomId);
+        if(heartBeatRedisManger.isUserEffective(userId)) {
+            redisTemplate.opsForHash().put(getKey(userId),FIELD_ROOM_ID,roomId);
+        }
     }
     public String getRoomId(Long userId){
-        return (String)redisTemplate.opsForHash().get(getKey(userId),FIELD_ROOM_ID);
+        if(heartBeatRedisManger.isUserEffective(userId)) {
+            return (String)redisTemplate.opsForHash().get(getKey(userId),FIELD_ROOM_ID);
+        }
+        return null;
+    }
+
+    public boolean refreshRedisUserEffectiveTime(long userId){
+        if(redisTemplate.hasKey(getKey(userId))) {
+            return heartBeatRedisManger.refreshRedisUserEffectiveTime(userId);
+        }
+        return false;
+    }
+
+    public void del(Long userId){
+        redisTemplate.delete(getKey(userId));
     }
 
     public void delRoomId(Long userId){
-        redisTemplate.opsForHash().delete(getKey(userId),FIELD_ROOM_ID);
+        redisTemplate.opsForHash().delete(getKey(userId), FIELD_ROOM_ID);
     }
 
 }

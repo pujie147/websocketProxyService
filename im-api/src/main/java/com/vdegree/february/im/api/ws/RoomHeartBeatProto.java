@@ -1,5 +1,6 @@
 package com.vdegree.february.im.api.ws;
 
+import com.vdegree.february.im.common.constant.type.ErrorEnum;
 import org.springframework.beans.BeanUtils;
 
 /**
@@ -17,8 +18,16 @@ public class RoomHeartBeatProto extends BaseProto{
         return proto;
     }
 
-    public ResponseProto buildResponseProto(){
-        return ResponseProto.buildResponse(this);
+    public ResponseProto buildResponseProto(ErrorEnum errorEnum){
+        ResponseProto responseProto = ResponseProto.buildResponse(this);
+        responseProto.setError(errorEnum);
+        responseProto.setResponseTime(System.currentTimeMillis());
+        return responseProto;
     }
 
+    public ResponseProto buildResponseProto(){
+        ResponseProto responseProto = ResponseProto.buildResponse(this);
+        responseProto.setResponseTime(System.currentTimeMillis());
+        return responseProto;
+    }
 }

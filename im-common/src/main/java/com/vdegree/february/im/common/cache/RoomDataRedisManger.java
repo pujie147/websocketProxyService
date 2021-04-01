@@ -19,6 +19,9 @@ public class RoomDataRedisManger {
 
     private String ROOM_SESSION_DATA_REDIS_KEY = "IM_ROOM_SESSION_DATA";
 
+    @Autowired
+    private RoomHeartBeatRedisManger roomHeartBeatRedisManger;
+
     private String getKey(String roomId){
         return ROOM_SESSION_DATA_REDIS_KEY+"_"+roomId;
     }
@@ -28,6 +31,7 @@ public class RoomDataRedisManger {
         opshash.put(getKey(roomId),FIELD_SEND_USER_ID,sendUserId);
         opshash.put(getKey(roomId),FIELD_INVITED_USER_ID,invitedUserId);
         opshash.put(getKey(roomId),FIELD_START_TIME,startTime);
+        roomHeartBeatRedisManger.generateRedisUserEffectiveTime(roomId);
     }
 
     private String FIELD_SEND_USER_ID = "sendUserId";
@@ -77,8 +81,15 @@ public class RoomDataRedisManger {
         return (Long)redisTemplate.opsForHash().get(getKey(roomId),FIELD_INVITED_USER_CONFIRM_COUNT);
     }
 
+    public boolean refreshRedisUserEffectiveTime(String roomId){
+        if(redisTemplate.hasKey(getKey(roomId))) {
+            return roomHeartBeatRedisManger.refreshRedisRoomEffectiveTime(roomId);
+        }
+        return false;
+    }
+
     public void delete(String roomId){
-        redisTemplate.opsForHash().delete(getKey(roomId));
+        redisTemplate.delete(getKey(roomId));
     }
 
 }
