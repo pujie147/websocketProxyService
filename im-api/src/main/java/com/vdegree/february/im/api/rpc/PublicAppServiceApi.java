@@ -16,4 +16,6 @@ public interface PublicAppServiceApi {
     boolean sendGrabOrderApi(Long sendUserId, List<Long> invitationUserIds, RoomType roomType);
 
     boolean pushQuitRoomApi(String roomId, RoomType roomType);
+
+    boolean pushDisConnected(Long userId);
 }

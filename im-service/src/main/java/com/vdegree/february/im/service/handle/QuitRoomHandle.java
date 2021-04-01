@@ -6,18 +6,15 @@ import com.google.gson.Gson;
 import com.vdegree.february.im.api.IMCMDRouting;
 import com.vdegree.february.im.api.ws.ProtoContext;
 import com.vdegree.february.im.api.ws.RequestProto;
-import com.vdegree.february.im.api.ws.message.push.InvitedUserEnterRoomPushMsg;
 import com.vdegree.february.im.api.ws.message.push.QuitRoomPushMsg;
-import com.vdegree.february.im.api.ws.message.request.InvitedUserEnterRoomRequestMsg;
 import com.vdegree.february.im.api.ws.message.request.QuitRoomRequestMsg;
 import com.vdegree.february.im.common.cache.RoomDataRedisManger;
-import com.vdegree.february.im.common.cache.RoomHeartBeatRedisManger;
+import com.vdegree.february.im.common.cache.UserDataRedisManger;
 import com.vdegree.february.im.common.constant.type.ErrorEnum;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.common.constant.type.RoomType;
 import com.vdegree.february.im.service.PushManager;
 import io.netty.util.internal.StringUtil;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -38,6 +35,8 @@ public class QuitRoomHandle implements BaseImServiceHandle {
     private Gson gson;
     @Autowired
     private RoomDataRedisManger roomDataRedisManger;
+    @Autowired
+    private UserDataRedisManger userDataRedisManger;
 
     @Override
     public ProtoContext execute(ProtoContext protoContext) {
@@ -56,6 +55,8 @@ public class QuitRoomHandle implements BaseImServiceHandle {
                         pushUserId = invitedUserId;
                     }
                     pushManager.pushProto(IMCMD.PUSH_QUIT_ROOM, new QuitRoomPushMsg(roomId, roomType), Lists.newArrayList(pushUserId));
+                    userDataRedisManger.delRoomId(sendUserId);
+                    userDataRedisManger.delRoomId(invitedUserId);
                     // 删除房间session信息
                     roomDataRedisManger.delete(roomId);
                     //TODO 回调appService 退出房间

@@ -17,6 +17,7 @@ public enum ErrorEnum {
     SUCCESS(ErrorEnum.SUCCESS_CODE,ErrorEnum.SUCCESS_INFO,"没有错误,执行完成"),
     PARAM_ERROR(1,"参数错误","参数错误"),
     ILLEGAL_REQUEST_ERROR(2,"非法请求错误","非法请求错误"),
+    DIS_CONNECTED_REQUEST_ERROR(101,"链接中断","链接中断"),
 
     /**
      * websocket 异常 websocket 使用

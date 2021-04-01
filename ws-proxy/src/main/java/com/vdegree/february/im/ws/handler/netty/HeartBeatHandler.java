@@ -44,6 +44,7 @@ public class HeartBeatHandler extends SimpleChannelInboundHandler<HeartBeatProto
             return;
         }else{
             log.error("用户：{} 心跳失败 用户失效",userId);
+            cacheChannelGroupManager.deleteUser(userId);
             responseProto.setError(ErrorEnum.HEART_BEAT_ERROR);
             ctx.channel().writeAndFlush(responseProto).addListener(future -> {
                 if(future.isSuccess()){

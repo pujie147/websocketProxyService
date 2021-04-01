@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * TODO
  *
@@ -34,7 +37,7 @@ class HeartBeatRedisManger {
     }
 
     public boolean refreshRedisUserEffectiveTime(long userId){
-        if (this.isUserEffective(userId)) {
+        if (isUserEffective(userId)) {
             redisTemplate.opsForZSet().add(USER_EFFECTIVE_REDIS_KEY, userId, idleTime());
             return true;
         }
@@ -48,6 +51,17 @@ class HeartBeatRedisManger {
         }
         return false;
     }
+    public boolean del(Long userId){
+        Long effectiveTime = redisTemplate.opsForZSet().remove(USER_EFFECTIVE_REDIS_KEY,userId);
+        if(effectiveTime!=null){
+            return true;
+        }
+        return false;
+    }
 
 
+    public List<Long> findInvalidUser(Long startTime, Long endTime) {
+        Set set = redisTemplate.opsForZSet().range(USER_EFFECTIVE_REDIS_KEY, startTime, endTime);
+        return (List<Long>) set;
+    }
 }

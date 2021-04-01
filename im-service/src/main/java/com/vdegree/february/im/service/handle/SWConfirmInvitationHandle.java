@@ -5,7 +5,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.vdegree.february.im.api.ws.*;
 import com.vdegree.february.im.api.ws.message.push.RefuseInvitationPushMsg;
-import com.vdegree.february.im.common.cache.RoomHeartBeatRedisManger;
+import com.vdegree.february.im.common.cache.RoomDataRedisManger;
 import com.vdegree.february.im.common.cache.UserDataRedisManger;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.api.IMCMDRouting;
@@ -32,7 +32,7 @@ public class SWConfirmInvitationHandle extends ConfirmInvitationHandle{
     @Autowired
     private UserDataRedisManger userDataRedisManger;
     @Autowired
-    private RoomHeartBeatRedisManger roomHeartBeatRedisManger;
+    private RoomDataRedisManger roomDataRedisManger;
     @Autowired
     private Gson gson;
     @Autowired
@@ -63,7 +63,7 @@ public class SWConfirmInvitationHandle extends ConfirmInvitationHandle{
             pushManager.pushProto(IMCMD.PUSH_ENTER_ROOM, pushMsg,Lists.newArrayList(invitedUserId));
             userDataRedisManger.putRoomId(invitedUserId,roomId);
 
-            roomHeartBeatRedisManger.generateRedisUserEffectiveTime(roomId,sendUserId,invitedUserId);
+            roomDataRedisManger.buildNewRedisData(roomId,sendUserId,invitedUserId);
         }else{
             RefuseInvitationPushMsg pushMsg = new RefuseInvitationPushMsg();
             pushMsg.setInvitedUserId(invitedUserId);

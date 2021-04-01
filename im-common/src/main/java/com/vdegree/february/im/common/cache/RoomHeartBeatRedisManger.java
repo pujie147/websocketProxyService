@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * TODO
  *
@@ -41,6 +44,19 @@ class RoomHeartBeatRedisManger {
     public boolean isUserEffective(String roomId){
         Long effectiveTime = redisTemplate.opsForZSet().rank(ROOM_EFFECTIVE_REDIS_KEY,roomId);
         if(System.currentTimeMillis()<=effectiveTime){
+            return true;
+        }
+        return false;
+    }
+
+    public List<String> findInvalidRoom(Long start,Long end){
+        Set set = redisTemplate.opsForZSet().range(ROOM_EFFECTIVE_REDIS_KEY, start, end);
+        return (List<String>) set;
+    }
+
+    public boolean del(String roomId){
+        Long effectiveTime = redisTemplate.opsForZSet().remove(ROOM_EFFECTIVE_REDIS_KEY,roomId);
+        if(effectiveTime!=null){
             return true;
         }
         return false;

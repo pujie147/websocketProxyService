@@ -12,7 +12,6 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import lombok.extern.log4j.Log4j2;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -49,9 +48,6 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
 
 
 
-//    @Autowired
-//    private RoomHeartBeatRedisManger roomHeartBeatRedisManger;
-
     public CacheChannelGroupManager(EventExecutor executor) {
         super(executor);
         this.executor = executor;
@@ -70,7 +66,6 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
             }else{
                 log.info("删除用户 {} 数据 用户已下线 原因:{}",removalNotification.getKey(),removalNotification.getCause().name());
             }
-            userDataRedisManger.del(removalNotification.getKey());
         },connectionMax.intValue(),idelTime);
 
         roomCacheManager = new RoomCacheManager(removalNotification ->  {
@@ -79,7 +74,6 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
             }else{
                 log.info("删除用户 {} 数据 用户已下线 原因:{}",removalNotification.getKey(),removalNotification.getCause().name());
             }
-//            RoomDataRedisManger.del(removalNotification.getKey());
         },connectionMax.intValue(),idelTime);
     }
 
@@ -109,11 +103,13 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
      **/
     @Override
     public boolean remove(Object o) {
+        Long userId = null;
         if (o instanceof ChannelId) {
-            userCacheManager.remove(find((ChannelId) o).attr(ChannelAttrConstant.USERID).get());
+            userId = find((ChannelId) o).attr(ChannelAttrConstant.USERID).get();
         } else if (o instanceof Channel) {
-            userCacheManager.remove(((Channel) o).attr(ChannelAttrConstant.USERID).get());
+            userId = ((Channel) o).attr(ChannelAttrConstant.USERID).get();
         }
+        this.deleteRoom(this.getRoomIdByUserId(userId));
         return super.remove(o);
     }
 
@@ -127,8 +123,9 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
      **/
     public boolean refreshUser(Long userId){
         if(userCacheManager.refreshLocalCacheIdelTime(userId)) {
-            userDataRedisManger.refreshRedisUserEffectiveTime(userId);
-            return true;
+            if(userDataRedisManger.refreshRedisUserEffectiveTime(userId)) {
+                return true;
+            }
         }
         return false;
     }
@@ -136,7 +133,7 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
     public boolean refreshRoom(Long userId){
         if(roomCacheManager.refreshLocalCacheIdelTime(userId)) {
             String roomId = roomCacheManager.getRoomIdByUserId(userId);
-            if(roomDataRedisManger.refreshRedisUserEffectiveTime(roomId)){
+            if(roomDataRedisManger.refreshRedisRoomEffectiveTime(roomId)){
                 return true;
             }
         }
@@ -145,6 +142,15 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
 
     public String getRoomIdByUserId(Long userId){
         return roomCacheManager.getRoomIdByUserId(userId);
+    }
+
+    public void deleteRoom(String roomId){
+        Long sendUserId = roomDataRedisManger.getSendUserId(roomId);
+        roomCacheManager.remove(sendUserId);
+    }
+
+    public void deleteUser(Long userId){
+        userCacheManager.remove(userId);
     }
 
     /**
@@ -197,9 +203,13 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
         final ChannelGroupFuture future;
         Map<Channel, ChannelFuture> futures = new LinkedHashMap<Channel, ChannelFuture>((int) userCacheManager.size());
         userIds.forEach(userId->{
-            Channel c = userCacheManager.getChannelByUserId(userId);
-            if(c!=null) {
-                futures.put(c, c.writeAndFlush(message));
+            try {
+                Channel c = userCacheManager.getChannelByUserId(userId);
+                if (c != null) {
+                    futures.put(c, c.writeAndFlush(message));
+                }
+            }catch (Exception e){
+                log.info("当前服务 消息push失败！！！ 用户{}  message {}",userId,message);
             }
         });
         future = new DefaultChannelGroupFuture(this, futures, this.executor);

@@ -9,8 +9,6 @@ package com.vdegree.february.im.ws.handler.netty;
  */
 
 import com.vdegree.february.im.api.ws.RoomHeartBeatProto;
-import com.vdegree.february.im.common.cache.RoomDataRedisManger;
-import com.vdegree.february.im.common.cache.UserDataRedisManger;
 import com.vdegree.february.im.common.constant.ChannelAttrConstant;
 import com.vdegree.february.im.common.constant.type.ErrorEnum;
 import com.vdegree.february.im.ws.cache.CacheChannelGroupManager;
@@ -33,18 +31,10 @@ import org.springframework.stereotype.Component;
 public class RoomHeartBeatHandler extends SimpleChannelInboundHandler<RoomHeartBeatProto> {
 
     @Autowired
-    private RoomDataRedisManger roomDataRedisManger;
-
-    @Autowired
-    private UserDataRedisManger userDataRedisManger;
-
-    @Autowired
     private CacheChannelGroupManager cacheChannelGroupManager;
 
     @Autowired
     RabbitTemplate rabbitTemplate;
-
-
 
 
     @Override
@@ -56,11 +46,13 @@ public class RoomHeartBeatHandler extends SimpleChannelInboundHandler<RoomHeartB
             ctx.channel().writeAndFlush(msg.buildResponseProto());
         }else{
             log.error("用户：{} 心跳失败 用户失效",userId);
-            ctx.channel().writeAndFlush(msg.buildResponseProto(ErrorEnum.ROOM_HEART_BEAT_ERROR)).addListener(future -> {
-                if(future.isSuccess()){
-                    ctx.close();
-                }
-            });
+            cacheChannelGroupManager.deleteRoom(cacheChannelGroupManager.getRoomIdByUserId(userId));
+            ctx.channel().writeAndFlush(msg.buildResponseProto(ErrorEnum.ROOM_HEART_BEAT_ERROR));
+//            ctx.channel().writeAndFlush(msg.buildResponseProto(ErrorEnum.ROOM_HEART_BEAT_ERROR)).addListener(future -> {
+//                if(future.isSuccess()){
+//                    ctx.close();
+//                }
+//            });
         }
     }
 }

@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * TODO
  *
@@ -35,22 +37,14 @@ public class UserDataRedisManger {
     }
 
     public Long getConnectStartTime(Long userId){
-        if(heartBeatRedisManger.isUserEffective(userId)) {
-            return (Long) redisTemplate.opsForHash().get(getKey(userId), FIELD_CONNECT_START_TIME);
-        }
-        return null;
+        return (Long) redisTemplate.opsForHash().get(getKey(userId), FIELD_CONNECT_START_TIME);
     }
 
     public void putRoomId(Long userId,String roomId){
-        if(heartBeatRedisManger.isUserEffective(userId)) {
-            redisTemplate.opsForHash().put(getKey(userId),FIELD_ROOM_ID,roomId);
-        }
+        redisTemplate.opsForHash().put(getKey(userId),FIELD_ROOM_ID,roomId);
     }
     public String getRoomId(Long userId){
-        if(heartBeatRedisManger.isUserEffective(userId)) {
-            return (String)redisTemplate.opsForHash().get(getKey(userId),FIELD_ROOM_ID);
-        }
-        return null;
+        return (String)redisTemplate.opsForHash().get(getKey(userId),FIELD_ROOM_ID);
     }
 
     public boolean refreshRedisUserEffectiveTime(long userId){
@@ -60,7 +54,12 @@ public class UserDataRedisManger {
         return false;
     }
 
+    public List<Long> findInvalidUser(Long startTime, Long endTime){
+        return heartBeatRedisManger.findInvalidUser(startTime,endTime);
+    }
+
     public void del(Long userId){
+        heartBeatRedisManger.del(userId);
         redisTemplate.delete(getKey(userId));
     }
 
