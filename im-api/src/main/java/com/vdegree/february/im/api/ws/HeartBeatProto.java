@@ -1,5 +1,6 @@
 package com.vdegree.february.im.api.ws;
 
+import com.vdegree.february.im.api.ws.message.request.HeartBestRequestMsg;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
@@ -14,7 +15,8 @@ import org.springframework.beans.BeanUtils;
 
 @Data
 public class HeartBeatProto extends BaseProto{
-
+    private HeartBestRequestMsg message;
+    //TODO 添加是否在房间的状态
     public static HeartBeatProto build(BaseProto baseProto){
         HeartBeatProto heartBeatProto = new HeartBeatProto();
         BeanUtils.copyProperties(baseProto,heartBeatProto);

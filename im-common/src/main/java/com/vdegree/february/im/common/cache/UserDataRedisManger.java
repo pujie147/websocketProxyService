@@ -37,7 +37,7 @@ public class UserDataRedisManger {
     }
 
     public Long getConnectStartTime(Long userId){
-        return (Long) redisTemplate.opsForHash().get(getKey(userId), FIELD_CONNECT_START_TIME);
+        return (Long) redisTemplate.opsForHash().lengthOfValue(getKey(userId), FIELD_CONNECT_START_TIME);
     }
 
     public void putRoomId(Long userId,String roomId){

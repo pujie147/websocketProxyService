@@ -39,6 +39,6 @@ public class WSProxyBroadcastConsumeMqListener {
             handle.execute(protoContext);
             return;
         }
-        log.error("找不到对应hanlde cmd :{} user:{}", protoContext.getBaseProto().getCmd().getType(), protoContext.getInternalProto().getSendUserId());
+        log.error("找不到对应hanlde cmd :{} user:{}", protoContext.getInternalProto().getImCMDType());
     }
 }

@@ -1,4 +1,4 @@
-package com.vdegree.february.im.service;
+package com.vdegree.february.im.service.communication;
 
 import com.google.common.collect.Maps;
 import com.vdegree.february.im.service.handle.BaseImServiceHandle;

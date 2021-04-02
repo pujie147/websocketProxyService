@@ -1,6 +1,7 @@
 package com.vdegree.february.im.api.ws;
 
 import com.google.gson.Gson;
+import com.vdegree.february.im.api.ws.message.request.HeartBestRequestMsg;
 import com.vdegree.february.im.common.constant.type.ErrorEnum;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.common.constant.type.PushType;
@@ -31,8 +32,10 @@ public class ProtoContext implements Serializable {
         return protoContext;
     }
 
-    public HeartBeatProto buildHeartBeatProto(){
-        return HeartBeatProto.build(baseProto);
+    public HeartBeatProto buildHeartBeatProto(HeartBestRequestMsg msg){
+        HeartBeatProto proto = HeartBeatProto.build(baseProto);
+        proto.setMessage(msg);
+        return proto;
     }
 
     public RoomHeartBeatProto buildRoomHeartBeatProto(){

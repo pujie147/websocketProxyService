@@ -45,12 +45,13 @@ class HeartBeatRedisManger {
     }
 
     public boolean isUserEffective(long userid){
-        Long effectiveTime = redisTemplate.opsForZSet().rank(USER_EFFECTIVE_REDIS_KEY,userid);
+        Long effectiveTime = redisTemplate.opsForZSet().score(USER_EFFECTIVE_REDIS_KEY, userid).longValue();
         if(System.currentTimeMillis()<=effectiveTime){
             return true;
         }
         return false;
     }
+
     public boolean del(Long userId){
         Long effectiveTime = redisTemplate.opsForZSet().remove(USER_EFFECTIVE_REDIS_KEY,userId);
         if(effectiveTime!=null){
@@ -58,7 +59,6 @@ class HeartBeatRedisManger {
         }
         return false;
     }
-
 
     public List<Long> findInvalidUser(Long startTime, Long endTime) {
         Set set = redisTemplate.opsForZSet().range(USER_EFFECTIVE_REDIS_KEY, startTime, endTime);

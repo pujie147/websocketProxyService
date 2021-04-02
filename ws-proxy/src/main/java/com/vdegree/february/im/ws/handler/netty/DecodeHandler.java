@@ -8,7 +8,13 @@ package com.vdegree.february.im.ws.handler.netty;
  * @date 2021/3/15 15:50
  */
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.vdegree.february.im.api.ws.HeartBeatProto;
 import com.vdegree.february.im.api.ws.ProtoContext;
+import com.vdegree.february.im.api.ws.RequestProto;
+import com.vdegree.february.im.api.ws.ResponseProto;
+import com.vdegree.february.im.api.ws.message.request.HeartBestRequestMsg;
 import com.vdegree.february.im.common.constant.ChannelAttrConstant;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.ws.cache.CacheChannelGroupManager;
@@ -42,6 +48,8 @@ public class DecodeHandler extends MessageToMessageDecoder<TextWebSocketFrame> {
     @Autowired
     RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    private Gson gson;
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
@@ -56,10 +64,9 @@ public class DecodeHandler extends MessageToMessageDecoder<TextWebSocketFrame> {
     protected void decode(ChannelHandlerContext ctx, TextWebSocketFrame msg, List<Object> out) throws Exception {
         ProtoContext protoContext = ProtoContext.buildContext(msg.text());
         if(IMCMD.REQUEST_HEARTBEAT.equals(protoContext.getBaseProto().getCmd())){
-            out.add(protoContext.buildHeartBeatProto());
-        }else if(IMCMD.REQUEST_ROOM_HEARTBEAT.equals(protoContext.getBaseProto().getCmd())){
-            out.add(protoContext.buildRoomHeartBeatProto());
-        }else{
+            HeartBeatProto heartBeatProto = gson.fromJson(msg.text(), HeartBeatProto.class);
+            out.add(heartBeatProto);
+        }else {
             out.add(protoContext);
         }
     }

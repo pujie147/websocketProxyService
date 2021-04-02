@@ -88,9 +88,13 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
      **/
     public boolean add(Long userId,Channel channel) {
         userDataRedisManger.buildNewRedisData(userId);
-//        userDataRedisManger.generateRedisUserEffectiveTime(userId);
         userCacheManager.put(userId,channel);
         return super.add(channel);
+    }
+
+    public boolean addRoom(Long userId,String roomId){
+        roomCacheManager.put(userId,roomId);
+        return true;
     }
 
     /**
@@ -131,11 +135,13 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
     }
 
     public boolean refreshRoom(Long userId){
-        if(roomCacheManager.refreshLocalCacheIdelTime(userId)) {
+        if(!roomCacheManager.refreshLocalCacheIdelTime(userId)) {
             String roomId = roomCacheManager.getRoomIdByUserId(userId);
             if(roomDataRedisManger.refreshRedisRoomEffectiveTime(roomId)){
                 return true;
             }
+        }else{
+            return true;
         }
         return false;
     }
@@ -147,6 +153,10 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
     public void deleteRoom(String roomId){
         Long sendUserId = roomDataRedisManger.getSendUserId(roomId);
         roomCacheManager.remove(sendUserId);
+    }
+
+    public void deleteRoom(Long userId){
+        roomCacheManager.remove(userId);
     }
 
     public void deleteUser(Long userId){

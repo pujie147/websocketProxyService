@@ -35,6 +35,11 @@ public enum IMCMD {
     @SerializedName("1")
     PUSH(1,"推送",20000,29999),
 
+    @SerializedName("2")
+    WP_IM(2,"WSProxy->IM服务",30000,34999),
+
+    @SerializedName("3")
+    IM_WP(3,"IM服务->WSProxy",35000,39999),
 
 
     /**
@@ -52,8 +57,6 @@ public enum IMCMD {
     REQUEST_QUIT_ROOM(10005,"退出房间","退出房间"),
     @SerializedName("10006")
     REQUEST_GRAB_ORDER_APPLICATION(10006,"抢单申请","抢单申请"),
-    @SerializedName("10011")
-    REQUEST_ROOM_HEARTBEAT(10011,"房间心跳","房间心跳，保证房间的有效，由房间发起人维持"),
 
 
     /**
@@ -69,7 +72,7 @@ public enum IMCMD {
     @SerializedName("20004")
     PUSH_QUIT_ROOM(20004,"退出房间","退出房间"),
     @SerializedName("20005")
-    SERVICE_EVENT(20005,"服务器事件","服务器事件"),
+    PUSH_SERVICE_EVENT(20005,"服务器事件","服务器事件"),
 //    @SerializedName("20005")
 //    PUSH_CONNECTION_CLOSE(20005,"链接关闭","链接关闭"),
     @SerializedName("20006")
@@ -82,8 +85,8 @@ public enum IMCMD {
 
 
     // ImService -> wsproxy 的协议 35000 - 39999
-
-    //
+    @SerializedName("35001")
+    IM_WP_INIT_ROOM_HEARBEAT(35001,"初始化房间心跳","初始化房间心跳"),
 
     ;
     private static HashMap<Integer, IMCMD> hashMap;
@@ -135,6 +138,10 @@ public enum IMCMD {
             return REQUEST;
         }else if(PUSH.startPoint<= imCMDType && imCMDType<=PUSH.endPoint){
             return PUSH;
+        }else if(WP_IM.startPoint<= imCMDType && imCMDType<=WP_IM.endPoint){
+            return IMCMD.get(imCMDType).get();
+        }else if(IM_WP.startPoint<= imCMDType && imCMDType<=IM_WP.endPoint){
+            return IMCMD.get(imCMDType).get();
         }
         return null;
     }

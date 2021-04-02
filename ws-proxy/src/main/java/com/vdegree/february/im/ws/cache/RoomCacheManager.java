@@ -107,8 +107,8 @@ public class RoomCacheManager {
      * @Date 17:51 2021/3/25
      * @Description 刷新本地缓存等待时间
      * @param: userId
-     * @Return void 
-     * @Exception 
+     * @Return void
+     * @Exception
      **/
     public boolean refreshLocalCacheIdelTime(Long userId) {
         try {

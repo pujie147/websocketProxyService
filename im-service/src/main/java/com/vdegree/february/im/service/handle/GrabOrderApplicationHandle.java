@@ -13,7 +13,7 @@ import com.vdegree.february.im.common.constant.type.ErrorEnum;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.common.utils.RoomIdGenerateUtil;
 import com.vdegree.february.im.common.utils.agora.RtcTokenBuilderUtil;
-import com.vdegree.february.im.service.PushManager;
+import com.vdegree.february.im.service.communication.PushManager;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 

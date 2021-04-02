@@ -11,7 +11,7 @@ import com.vdegree.february.im.common.cache.UserDataRedisManger;
 import com.vdegree.february.im.common.constant.type.ErrorEnum;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.common.constant.type.RoomType;
-import com.vdegree.february.im.service.PushManager;
+import com.vdegree.february.im.service.communication.PushManager;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +87,7 @@ public class PublicAppServiceApiImpl implements PublicAppServiceApi {
         String roomId = userDataRedisManger.getRoomId(userId);
         Long invitedUserId = roomDataRedisManger.getInvitedUserId(roomId);
         Long sendUserId = roomDataRedisManger.getSendUserId(roomId);
-        pushManager.pushProto(IMCMD.SERVICE_EVENT, new ServiceEventPushMsg(ErrorEnum.DIS_CONNECTED_REQUEST_ERROR), Lists.newArrayList(sendUserId, invitedUserId));
+        pushManager.pushProto(IMCMD.PUSH_SERVICE_EVENT, new ServiceEventPushMsg(ErrorEnum.DIS_CONNECTED_REQUEST_ERROR), Lists.newArrayList(sendUserId, invitedUserId));
         userDataRedisManger.del(sendUserId);
         userDataRedisManger.del(invitedUserId);
         roomDataRedisManger.delete(roomId);

@@ -1,5 +1,6 @@
 package com.vdegree.february.im.api.ws;
 
+import com.vdegree.february.im.api.im2ws.IM2WSProto;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.common.constant.type.PushType;
 import lombok.Data;
@@ -24,6 +25,8 @@ public class InternalProto implements Serializable {
     private Long wsProxyEndTime;
     private Long imServiceStartTime;
     private Long imServiceEndTime;
+
+    private IM2WSProto im2WSProto;
     /**
      * {@link IMCMD} 的type为了防止 ws-proxy 没有更新是找不对应
      */

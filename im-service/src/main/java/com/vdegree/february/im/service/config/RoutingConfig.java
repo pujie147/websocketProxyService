@@ -1,7 +1,7 @@
 package com.vdegree.february.im.service.config;
 
 import com.vdegree.february.im.api.IMCMDRouting;
-import com.vdegree.february.im.service.MQRoutingManger;
+import com.vdegree.february.im.service.communication.MQRoutingManger;
 import com.vdegree.february.im.service.handle.BaseImServiceHandle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

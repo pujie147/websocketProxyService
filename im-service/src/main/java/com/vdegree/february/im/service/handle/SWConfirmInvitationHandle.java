@@ -3,6 +3,7 @@ package com.vdegree.february.im.service.handle;
 import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.vdegree.february.im.api.im2ws.message.IM2WSInitRoomHeartbeatProto;
 import com.vdegree.february.im.api.ws.*;
 import com.vdegree.february.im.api.ws.message.push.RefuseInvitationPushMsg;
 import com.vdegree.february.im.common.cache.RoomDataRedisManger;
@@ -14,7 +15,8 @@ import com.vdegree.february.im.api.ws.message.push.EnterRoomPushMsg;
 import com.vdegree.february.im.api.ws.message.request.ConfirmInvitationRequestMsg;
 import com.vdegree.february.im.common.utils.RoomIdGenerateUtil;
 import com.vdegree.february.im.common.utils.agora.RtcTokenBuilderUtil;
-import com.vdegree.february.im.service.PushManager;
+import com.vdegree.february.im.service.communication.IM2WSManager;
+import com.vdegree.february.im.service.communication.PushManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -39,6 +41,8 @@ public class SWConfirmInvitationHandle extends ConfirmInvitationHandle{
     private RtcTokenBuilderUtil rtcTokenBuilderUtil;
     @Autowired
     private PushManager pushManager;
+    @Autowired
+    private IM2WSManager im2WSManager;
 
     @Override
     public ProtoContext execute(ProtoContext protoContext) {
@@ -64,6 +68,7 @@ public class SWConfirmInvitationHandle extends ConfirmInvitationHandle{
             userDataRedisManger.putRoomId(invitedUserId,roomId);
 
             roomDataRedisManger.buildNewRedisData(roomId,sendUserId,invitedUserId);
+            im2WSManager.sendProto(IMCMD.IM_WP_INIT_ROOM_HEARBEAT,new IM2WSInitRoomHeartbeatProto(sendUserId,roomId));
         }else{
             RefuseInvitationPushMsg pushMsg = new RefuseInvitationPushMsg();
             pushMsg.setInvitedUserId(invitedUserId);

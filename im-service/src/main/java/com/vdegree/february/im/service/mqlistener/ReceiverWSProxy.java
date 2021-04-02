@@ -5,7 +5,7 @@ import com.vdegree.february.im.api.ws.BaseProto;
 import com.vdegree.february.im.api.ws.ProtoContext;
 import com.vdegree.february.im.common.constant.ImServiceQueueConstant;
 import com.vdegree.february.im.common.constant.WSPorxyBroadcastConstant;
-import com.vdegree.february.im.service.MQRoutingManger;
+import com.vdegree.february.im.service.communication.MQRoutingManger;
 import com.vdegree.february.im.service.handle.BaseImServiceHandle;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.core.ExchangeTypes;

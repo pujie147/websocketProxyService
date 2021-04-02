@@ -33,8 +33,8 @@ public class WSServerInitialzer extends ChannelInitializer<SocketChannel> {
     private EncodeHandler encodeHandler;
     @Autowired
     private HeartBeatHandler heartBeatHandler;
-    @Autowired
-    private RoomHeartBeatHandler roomHeartBeatHandler;
+//    @Autowired
+//    private RoomHeartBeatHandler roomHeartBeatHandler;
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
@@ -65,7 +65,7 @@ public class WSServerInitialzer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(decodeHandler);
         pipeline.addLast(encodeHandler);
         pipeline.addLast(heartBeatHandler);
-        pipeline.addLast(roomHeartBeatHandler);
+//        pipeline.addLast(roomHeartBeatHandler);
         pipeline.addLast(chatHandler);
     }
 

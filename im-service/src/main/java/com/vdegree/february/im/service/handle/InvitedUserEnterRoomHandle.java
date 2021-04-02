@@ -8,7 +8,7 @@ import com.vdegree.february.im.api.ws.message.push.InvitedUserEnterRoomPushMsg;
 import com.vdegree.february.im.api.ws.message.request.InvitedUserEnterRoomRequestMsg;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.api.IMCMDRouting;
-import com.vdegree.february.im.service.PushManager;
+import com.vdegree.february.im.service.communication.PushManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
