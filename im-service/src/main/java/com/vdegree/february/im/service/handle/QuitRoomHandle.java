@@ -1,6 +1,7 @@
 package com.vdegree.february.im.service.handle;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.vdegree.february.im.api.IMCMDRouting;
@@ -16,6 +17,8 @@ import com.vdegree.february.im.common.constant.type.RoomType;
 import com.vdegree.february.im.service.communication.PushManager;
 import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
 
 /**
  * 1.接收客户端发起的聊天邀请
@@ -46,15 +49,11 @@ public class QuitRoomHandle implements BaseImServiceHandle {
         if(!StringUtil.isNullOrEmpty(roomId)){
             if(roomId.startsWith(roomType.getRoomPrefix())) {
                 try {
-                    Long pushUserId=null;
                     Long sendUserId = roomDataRedisManger.getSendUserId(roomId);
-                    Long invitedUserId = roomDataRedisManger.getSendUserId(roomId);
-                    if(protoContext.getInternalProto().getSendUserId().compareTo(sendUserId)==0){
-                        pushUserId = sendUserId;
-                    }else if(protoContext.getInternalProto().getSendUserId().compareTo(invitedUserId)==0){
-                        pushUserId = invitedUserId;
-                    }
-                    pushManager.pushProto(IMCMD.PUSH_QUIT_ROOM, new QuitRoomPushMsg(roomId, roomType), Lists.newArrayList(pushUserId));
+                    Long invitedUserId = roomDataRedisManger.getInvitedUserId(roomId);
+                    ArrayList<Long> pushUserids = Lists.newArrayList(sendUserId, invitedUserId);
+                    pushUserids.remove(protoContext.getInternalProto().getSendUserId());
+                    pushManager.pushProto(IMCMD.PUSH_QUIT_ROOM, new QuitRoomPushMsg(roomId, roomType), pushUserids);
                     userDataRedisManger.delRoomId(sendUserId);
                     userDataRedisManger.delRoomId(invitedUserId);
                     // 删除房间session信息

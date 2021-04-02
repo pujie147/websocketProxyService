@@ -38,12 +38,12 @@ public class ConfirmEnterRoomHandle implements BaseImServiceHandle {
         userDataRedisManger.putRoomId(protoContext.getInternalProto().getSendUserId(),msg.getMessage().getRoomId());
         if(roomDataRedisManger.getSendUserId(msg.getMessage().getRoomId()).compareTo(protoContext.getInternalProto().getSendUserId())==0){
             roomDataRedisManger.incConfirmSendUserCount(msg.getMessage().getRoomId());
-            if(roomDataRedisManger.incConfirminvitedUserCount(msg.getMessage().getRoomId())>0){
+            if(roomDataRedisManger.incConfirminvitedUserCount(msg.getMessage().getRoomId())>1){
                 // TODO 双方都确认 可以发起回调
             }
         }else if(roomDataRedisManger.getInvitedUserId(msg.getMessage().getRoomId()).compareTo(protoContext.getInternalProto().getSendUserId())==0){
             roomDataRedisManger.incConfirminvitedUserCount(msg.getMessage().getRoomId());
-            if(roomDataRedisManger.incConfirmSendUserCount(msg.getMessage().getRoomId())>0){
+            if(roomDataRedisManger.incConfirmSendUserCount(msg.getMessage().getRoomId())>1){
                 // TODO 双方都确认 可以发起回调
             }
         }else{

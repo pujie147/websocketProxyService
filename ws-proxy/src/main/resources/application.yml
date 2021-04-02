@@ -18,8 +18,8 @@ spring:
 ws:
   service:
     port: 8090
-    idle-time: 60000
-    connection-max: 2
+    idle-time: 600000
+    connection-max: 1000
 
 logging:
   level:

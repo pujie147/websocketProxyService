@@ -36,8 +36,7 @@ public class InvitedUserEnterRoomHandle implements BaseImServiceHandle {
         pushMsg.setRoomType(invitedUserEnterRoomRequestMsg.getMessage().getRoomType());
         pushMsg.setSendUserId(protoContext.getInternalProto().getSendUserId());
         pushManager.pushProto(IMCMD.PUSH_INVITED_USER_ENTER_ROOM,pushMsg,Lists.newArrayList(invitedUserEnterRoomRequestMsg.getMessage().getInvitedUserId()));
-        protoContext.buildSuccessResponseProto();
-        return protoContext;
+        return protoContext.buildSuccessResponseProto();
     }
 
 }

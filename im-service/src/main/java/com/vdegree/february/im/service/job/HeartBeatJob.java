@@ -41,7 +41,8 @@ public class HeartBeatJob {
      * @Description 用户心跳维持
      * @param: param
      * @Return com.xxl.job.core.biz.model.ReturnT<java.lang.String> 
-     * @Exception 
+     * @Exception
+     *
      **/
     @VdJobHandler("IMUserHeartBeat")
     public ReturnT<String> userHeartBeat(String param) throws Exception {
@@ -50,7 +51,7 @@ public class HeartBeatJob {
         List<Long> userIdList = userDataRedisManger.findInvalidUser(startTime, endTime);
         userIdList.forEach(userId -> {
             publicAppServiceApi.pushDisConnected(userId);
-
+            //TODO 断开连接 wsproxy
         });
 //        XxlJobLogger.log("XXL-JOB, Hello World.");
 //

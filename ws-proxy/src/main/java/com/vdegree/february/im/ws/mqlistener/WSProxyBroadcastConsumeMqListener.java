@@ -29,7 +29,7 @@ public class WSProxyBroadcastConsumeMqListener {
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(value = WSPorxyBroadcastConstant.QUEUE_NAME),
             exchange = @Exchange(value = WSPorxyBroadcastConstant.EXCHANGE_NAME, type = ExchangeTypes.FANOUT),
-            key = WSPorxyBroadcastConstant.ROUTING_KEY))
+            key = WSPorxyBroadcastConstant.ROUTING_KEY)) // TODO queue name 每一台 wsProxy 服务要唯一
     public void process(ProtoContext protoContext){
         System.out.println("WSProxyBroadcastConsumeMqListener: "+ protoContext.toString());
         // 判断消费类型

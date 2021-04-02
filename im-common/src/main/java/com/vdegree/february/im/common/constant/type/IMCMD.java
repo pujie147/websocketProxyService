@@ -12,7 +12,7 @@ import java.util.Optional;
  * 作为路由器使用，唯有heartbeat是wsproxy本身处理
  * 其他命令都是转发
  * 分为：
- *      1、lient 发给 service的协议               10000 - 19999
+ *      1、client 发给 service的协议               10000 - 19999
  *      2、service主动推送给 client的协议          20000 - 29999
  *      3、wsproxy -> imService 的协议           30000 - 34999
  *      4、ImService -> wsproxy 的协议           35000 - 39999
