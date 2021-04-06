@@ -47,14 +47,20 @@ public class HeartBeatJob {
      **/
     @VdJobHandler("IMUserHeartBeat")
     public ReturnT<String> userHeartBeat(String param) throws Exception {
-        Set<Long> userIdList = userDataRedisManger.findInvalidUser();
+        Set userIdList = userDataRedisManger.findInvalidUser();
         XxlJobLogger.log("find user Heartbeat time out count:{}",userIdList.size());
         XxlJobLogger.log("------------------------------handler start----------------------------");
-        userIdList.forEach(userId -> {
+        for (Object userId : userIdList) {
             XxlJobLogger.log("handler user Heartbeat outTime userId:{}",userId);
-            publicAppServiceApi.pushDisConnected(userId);
-        });
-        XxlJobLogger.log("------------------------------handler start----------------------------");
+            if(userId instanceof Integer){
+                publicAppServiceApi.pushDisConnected(((Integer) userId).longValue());
+            }else if(userId instanceof Long){
+                publicAppServiceApi.pushDisConnected((Long)userId);
+            }else{
+                XxlJobLogger.log("error type ！！！");
+            }
+        }
+        XxlJobLogger.log("------------------------------handler end----------------------------");
         return ReturnT.SUCCESS;
     }
 
@@ -70,6 +76,7 @@ public class HeartBeatJob {
     public ReturnT<String> roomHeartBeat(String param) throws Exception {
         Set<String> roomIdList = roomDataRedisManger.findInvalidRoom();
         XxlJobLogger.log("find room Heartbeat time out count:{} ",roomIdList.size());
+        XxlJobLogger.log("------------------------------handler start----------------------------");
         roomIdList.forEach(roomId -> {
             RoomType type = RoomType.getRoomPrefixByRoomId(roomId);
             XxlJobLogger.log("handler room Heartbeat time out roomId:{}",roomId);
@@ -77,6 +84,7 @@ public class HeartBeatJob {
                 publicAppServiceApi.pushQuitRoomApi(roomId,type);
             }
         });
+        XxlJobLogger.log("------------------------------handler end----------------------------");
         return ReturnT.SUCCESS;
     }
 }

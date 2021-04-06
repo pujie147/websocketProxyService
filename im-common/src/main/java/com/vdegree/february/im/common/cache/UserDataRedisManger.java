@@ -57,7 +57,7 @@ public class UserDataRedisManger {
         return false;
     }
 
-    public Set<Long> findInvalidUser(){
+    public Set findInvalidUser(){
         return heartBeatRedisManger.findInvalidUser();
     }
 

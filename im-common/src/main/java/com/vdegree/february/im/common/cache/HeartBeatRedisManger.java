@@ -115,7 +115,7 @@ class HeartBeatRedisManger {
      * @Return java.util.Set<java.lang.Long> 
      * @Exception 
      **/
-    public Set<Long> findInvalidUser() {
+    public Set findInvalidUser() {
         Set set = redisTemplate.opsForZSet().rangeByScore(USER_EFFECTIVE_REDIS_KEY, 0, System.currentTimeMillis());
         return set;
     }

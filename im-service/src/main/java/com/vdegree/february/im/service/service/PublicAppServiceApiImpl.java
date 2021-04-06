@@ -113,21 +113,22 @@ public class PublicAppServiceApiImpl implements PublicAppServiceApi {
     @Override
     public boolean pushDisConnected(Long userId){
         String roomId = userDataRedisManger.getRoomId(userId);
-        Long invitedUserId = roomDataRedisManger.getInvitedUserId(roomId);
-        Long sendUserId = roomDataRedisManger.getSendUserId(roomId);
-        if(userId.compareTo(invitedUserId)==0) {
-            pushManager.pushProto(IMCMD.PUSH_SERVICE_EVENT, new ServiceEventPushMsg(ErrorEnum.ROOM_FAILURE), Lists.newArrayList(sendUserId));
-            pushManager.pushProto(IMCMD.PUSH_SERVICE_EVENT, new ServiceEventPushMsg(ErrorEnum.DIS_CONNECTED_REQUEST_ERROR), Lists.newArrayList(invitedUserId));
-            userDataRedisManger.delRoomId(sendUserId);
-            userDataRedisManger.del(invitedUserId);
-            roomDataRedisManger.delete(roomId);
-        }else if(userId.compareTo(sendUserId)==0){
-            pushManager.pushProto(IMCMD.PUSH_SERVICE_EVENT, new ServiceEventPushMsg(ErrorEnum.ROOM_FAILURE), Lists.newArrayList(invitedUserId));
-            pushManager.pushProto(IMCMD.PUSH_SERVICE_EVENT, new ServiceEventPushMsg(ErrorEnum.DIS_CONNECTED_REQUEST_ERROR), Lists.newArrayList(sendUserId));
-            userDataRedisManger.delRoomId(invitedUserId);
-            userDataRedisManger.del(sendUserId);
-            roomDataRedisManger.delete(roomId);
+        if(roomId!=null) {
+            Long invitedUserId = roomDataRedisManger.getInvitedUserId(roomId);
+            Long sendUserId = roomDataRedisManger.getSendUserId(roomId);
+            if (userId.compareTo(invitedUserId) == 0) {
+                pushManager.pushProto(IMCMD.PUSH_SERVICE_EVENT, new ServiceEventPushMsg(ErrorEnum.ROOM_FAILURE), Lists.newArrayList(sendUserId));
+                pushManager.pushProto(IMCMD.PUSH_SERVICE_EVENT, new ServiceEventPushMsg(ErrorEnum.DIS_CONNECTED_REQUEST_ERROR), Lists.newArrayList(invitedUserId));
+                userDataRedisManger.delRoomId(sendUserId);
+                roomDataRedisManger.delete(roomId);
+            } else if (userId.compareTo(sendUserId) == 0) {
+                pushManager.pushProto(IMCMD.PUSH_SERVICE_EVENT, new ServiceEventPushMsg(ErrorEnum.ROOM_FAILURE), Lists.newArrayList(invitedUserId));
+                pushManager.pushProto(IMCMD.PUSH_SERVICE_EVENT, new ServiceEventPushMsg(ErrorEnum.DIS_CONNECTED_REQUEST_ERROR), Lists.newArrayList(sendUserId));
+                userDataRedisManger.delRoomId(invitedUserId);
+                roomDataRedisManger.delete(roomId);
+            }
         }
+        userDataRedisManger.del(userId);
         im2WSManager.sendProto(IMCMD.IM_WP_DIS_CONNECTED_USER,new IM2WSDisConnectedProto(userId));
         //TODO 回调 appservice 离线用户
         return true;
