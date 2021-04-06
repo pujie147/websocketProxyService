@@ -10,6 +10,7 @@ import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,15 +22,16 @@ import org.springframework.stereotype.Component;
 @Component
 @Log4j2
 public class WSProxyBroadcastConsumeMqListener {
+
     @Autowired
     @Qualifier("routingManager")
     private RoutingManger controllerManager;
 
     @RabbitHandler
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(value = WSPorxyBroadcastConstant.QUEUE_NAME),
+            value = @Queue(value = "#{queue.name}"),
             exchange = @Exchange(value = WSPorxyBroadcastConstant.EXCHANGE_NAME, type = ExchangeTypes.FANOUT),
-            key = WSPorxyBroadcastConstant.ROUTING_KEY)) // TODO queue name 每一台 wsProxy 服务要唯一
+            key = WSPorxyBroadcastConstant.ROUTING_KEY))
     public void process(ProtoContext protoContext){
         System.out.println("WSProxyBroadcastConsumeMqListener: "+ protoContext.toString());
         // 判断消费类型
