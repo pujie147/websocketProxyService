@@ -9,7 +9,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * TODO
+ * 房间redis 心跳管理
+ * 使用 zset 记录用户心跳
+ * Score 最后一次心跳时间戳
+ * value 中存放RoomId
+ * 不能直接访问 可以通过 ${@link RoomDataRedisManger} 访问
  *
  * @author DELL
  * @version 1.0
@@ -49,9 +53,9 @@ class RoomHeartBeatRedisManger {
         return false;
     }
 
-    public List<String> findInvalidRoom(Long start,Long end){
-        Set set = redisTemplate.opsForZSet().range(ROOM_EFFECTIVE_REDIS_KEY, start, end);
-        return (List<String>) set;
+    public Set<String> findInvalidRoom(){
+        Set<String> set = redisTemplate.opsForZSet().rangeByScore(ROOM_EFFECTIVE_REDIS_KEY,0,System.currentTimeMillis());
+        return set;
     }
 
     public boolean del(String roomId){

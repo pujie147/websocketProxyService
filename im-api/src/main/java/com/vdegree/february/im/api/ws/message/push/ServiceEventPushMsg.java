@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * TODO
+ * 服务器事件推送
  *
  * @author DELL
  * @version 1.0

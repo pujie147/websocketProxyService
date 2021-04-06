@@ -4,7 +4,7 @@ import com.vdegree.february.im.api.ws.ProtoContext;
 import com.vdegree.february.im.api.ws.message.push.InvitedUserEnterRoomPushMsg;
 
 /**
- * TODO
+ * ImServcie handler的接口
  *
  * @author DELL
  * @version 1.0

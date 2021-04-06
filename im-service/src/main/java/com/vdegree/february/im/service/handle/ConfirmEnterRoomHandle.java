@@ -13,9 +13,8 @@ import com.vdegree.february.im.api.IMCMDRouting;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * 1.接收客户端发起的聊天邀请
- * 2.回调appservice
- * 4.return
+ * 确认进入房间
+ * 在双方确认是触发回调
  * @author DELL
  * @version 1.0
  * @date 2021/3/26 19:56

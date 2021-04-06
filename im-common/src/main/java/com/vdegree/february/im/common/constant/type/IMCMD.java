@@ -87,6 +87,8 @@ public enum IMCMD {
     // ImService -> wsproxy 的协议 35000 - 39999
     @SerializedName("35001")
     IM_WP_INIT_ROOM_HEARBEAT(35001,"初始化房间心跳","初始化房间心跳"),
+    @SerializedName("35002")
+    IM_WP_DIS_CONNECTED_USER(35002,"断开用户连接","断开用户连接"),
 
     ;
     private static HashMap<Integer, IMCMD> hashMap;

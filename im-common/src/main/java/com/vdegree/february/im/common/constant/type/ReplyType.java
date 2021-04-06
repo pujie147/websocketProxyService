@@ -3,7 +3,7 @@ package com.vdegree.february.im.common.constant.type;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * TODO
+ * 接受类型
  *
  * @author DELL
  * @version 1.0

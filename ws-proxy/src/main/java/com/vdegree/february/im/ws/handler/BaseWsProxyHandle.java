@@ -3,7 +3,7 @@ package com.vdegree.february.im.ws.handler;
 import com.vdegree.february.im.api.ws.ProtoContext;
 
 /**
- * TODO
+ * wsproxy handler 接口
  *
  * @author DELL
  * @version 1.0

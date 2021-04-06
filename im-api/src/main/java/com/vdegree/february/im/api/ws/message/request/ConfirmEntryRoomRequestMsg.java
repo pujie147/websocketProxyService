@@ -4,7 +4,7 @@ import com.vdegree.february.im.common.constant.type.RoomType;
 import lombok.Data;
 
 /**
- * TODO
+ * 确认进入房间 请求
  *
  * @author DELL
  * @version 1.0

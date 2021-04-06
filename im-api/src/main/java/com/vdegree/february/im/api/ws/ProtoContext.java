@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * TODO
+ * wsproxy 和 imservice 交互对象 保存请求和响应的类型和需要构造的基础数据
  *
  * @author DELL
  * @version 1.0
@@ -36,10 +36,6 @@ public class ProtoContext implements Serializable {
         HeartBeatProto proto = HeartBeatProto.build(baseProto);
         proto.setMessage(msg);
         return proto;
-    }
-
-    public RoomHeartBeatProto buildRoomHeartBeatProto(){
-        return RoomHeartBeatProto.build(baseProto);
     }
 
     public ProtoContext buildSuccessResponseProto() {

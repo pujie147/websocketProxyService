@@ -1,7 +1,9 @@
 package com.vdegree.february.im.service.handle;
 
 /**
- * TODO
+ * 确认邀请抽象类
+ * 可以有 声网实现 或者 其他第三方实现
+ * 使用${@link com.vdegree.february.im.service.config.RoutingConfig} 的 referenceRoutingManger（）方法确定实际的实例
  *
  * @author DELL
  * @version 1.0

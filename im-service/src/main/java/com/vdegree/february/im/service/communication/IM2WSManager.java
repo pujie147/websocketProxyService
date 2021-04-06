@@ -1,21 +1,16 @@
 package com.vdegree.february.im.service.communication;
 
-import com.google.gson.Gson;
 import com.vdegree.february.im.api.im2ws.IM2WSProto;
 import com.vdegree.february.im.api.ws.ProtoContext;
-import com.vdegree.february.im.api.ws.PushProto;
-import com.vdegree.february.im.api.ws.ResponseProto;
 import com.vdegree.february.im.common.constant.WSPorxyBroadcastConstant;
 import com.vdegree.february.im.common.constant.type.IMCMD;
-import com.vdegree.february.im.common.constant.type.PushType;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 
 /**
- * TODO
+ * Im -> wsProxy 发送mq 管理
  *
  * @author DELL
  * @version 1.0

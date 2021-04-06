@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -32,7 +33,7 @@ public class HeartBeatJob {
     @Autowired
     private PublicAppServiceApi publicAppServiceApi;
 
-    @Value("${ss:180000}")
+    @Value("${ws.service.heartBeat.effective-time}")
     private Long effectiveTime;
 
     /**
@@ -46,19 +47,14 @@ public class HeartBeatJob {
      **/
     @VdJobHandler("IMUserHeartBeat")
     public ReturnT<String> userHeartBeat(String param) throws Exception {
-        long endTime = System.currentTimeMillis() - effectiveTime;
-        long startTime = endTime - effectiveTime*2;
-        List<Long> userIdList = userDataRedisManger.findInvalidUser(startTime, endTime);
+        Set<Long> userIdList = userDataRedisManger.findInvalidUser();
+        XxlJobLogger.log("find user Heartbeat time out count:{}",userIdList.size());
+        XxlJobLogger.log("------------------------------handler start----------------------------");
         userIdList.forEach(userId -> {
+            XxlJobLogger.log("handler user Heartbeat outTime userId:{}",userId);
             publicAppServiceApi.pushDisConnected(userId);
-            //TODO 断开连接 wsproxy
         });
-//        XxlJobLogger.log("XXL-JOB, Hello World.");
-//
-//        for (int i = 0; i < 5; i++) {
-//            XxlJobLogger.log("beat at:" + i); // 日志输出 xxl-job-server
-//            TimeUnit.SECONDS.sleep(2);
-//        }
+        XxlJobLogger.log("------------------------------handler start----------------------------");
         return ReturnT.SUCCESS;
     }
 
@@ -72,14 +68,13 @@ public class HeartBeatJob {
      **/
     @VdJobHandler("IMRoomHeartBeat")
     public ReturnT<String> roomHeartBeat(String param) throws Exception {
-        long endTime = System.currentTimeMillis() - effectiveTime;
-        long startTime = endTime - effectiveTime*2;
-        List<String> roomIdList = roomDataRedisManger.findInvalidRoom(startTime, endTime);
+        Set<String> roomIdList = roomDataRedisManger.findInvalidRoom();
+        XxlJobLogger.log("find room Heartbeat time out count:{} ",roomIdList.size());
         roomIdList.forEach(roomId -> {
-            for (RoomType value : RoomType.values()) {
-                if(value.getRoomPrefix().startsWith(roomId)) {
-                    publicAppServiceApi.pushQuitRoomApi(roomId, value);
-                }
+            RoomType type = RoomType.getRoomPrefixByRoomId(roomId);
+            XxlJobLogger.log("handler room Heartbeat time out roomId:{}",roomId);
+            if(type!=null){
+                publicAppServiceApi.pushQuitRoomApi(roomId,type);
             }
         });
         return ReturnT.SUCCESS;

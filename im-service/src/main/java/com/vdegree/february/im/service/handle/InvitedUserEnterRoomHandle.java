@@ -12,10 +12,7 @@ import com.vdegree.february.im.service.communication.PushManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * 1.接收客户端发起的聊天邀请
- * 2.回调appservice判断是否有可以邀请
- * 3.push 被邀请用户客户端
- * 4.return
+ * 邀请用户进入房间
  *
  * @author DELL
  * @version 1.0
@@ -32,6 +29,7 @@ public class InvitedUserEnterRoomHandle implements BaseImServiceHandle {
     @Override
     public ProtoContext execute(ProtoContext protoContext) {
         RequestProto<InvitedUserEnterRoomRequestMsg> invitedUserEnterRoomRequestMsg = gson.fromJson(protoContext.getJson(),new TypeToken<RequestProto<InvitedUserEnterRoomRequestMsg>>(){}.getType());
+        // TODO 回调 appservice 是否能发起邀请
         InvitedUserEnterRoomPushMsg pushMsg = new InvitedUserEnterRoomPushMsg();
         pushMsg.setRoomType(invitedUserEnterRoomRequestMsg.getMessage().getRoomType());
         pushMsg.setSendUserId(protoContext.getInternalProto().getSendUserId());

@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-
 /**
+ * wsproxy 接收 imservice 广播消费
  * @author DELL
  * @version 1.0
  * @date 2021/3/26 19:03

@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * TODO
+ * wsproxy 和 imservice 内部使用参数保存
  *
  * @author DELL
  * @version 1.0

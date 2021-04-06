@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 
 /**
- * TODO
+ * client -> imservice 要处理的请求和参数
  *
  * @author DELL
  * @version 1.0

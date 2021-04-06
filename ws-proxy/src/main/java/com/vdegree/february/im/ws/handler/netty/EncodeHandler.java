@@ -16,7 +16,7 @@ import java.util.List;
 
 
 /**
- * TODO
+ * 编码 handler
  *
  * @author DELL
  * @version 1.0

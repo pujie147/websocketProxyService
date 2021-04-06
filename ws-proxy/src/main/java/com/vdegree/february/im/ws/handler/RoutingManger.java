@@ -5,7 +5,7 @@ import com.google.common.collect.Maps;
 import java.util.HashMap;
 
 /**
- * TODO
+ * wsproxy handler 映射关系保存类
  *
  * @author DELL
  * @version 1.0

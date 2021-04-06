@@ -6,9 +6,13 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 /**
- * TODO
+ * 房间的基础信息
+ * redis 操作类
+ * 确认邀请成功时创建 SWConfirmInvitationHandle
+ * 房间失效时销毁
  *
  * @author DELL
  * @version 1.0
@@ -28,6 +32,16 @@ public class RoomDataRedisManger {
         return ROOM_SESSION_DATA_REDIS_KEY+"_"+roomId;
     }
 
+    /**
+     * @Author DELL
+     * @Date 14:38 2021/4/6
+     * @Description 初始化 房间在redis中的缓存信息
+     * @param: roomId
+     * @param: sendUserId
+     * @param: invitedUserId
+     * @Return void
+     * @Exception
+     **/
     public void buildNewRedisData(String roomId,Long sendUserId,Long invitedUserId){
         HashOperations opshash = redisTemplate.opsForHash();
         opshash.put(getKey(roomId),FIELD_SEND_USER_ID,sendUserId);
@@ -36,6 +50,9 @@ public class RoomDataRedisManger {
         roomHeartBeatRedisManger.generateRedisUserEffectiveTime(roomId);
     }
 
+    /**
+     * 房间缓存 发起用户Id保存
+     */
     private String FIELD_SEND_USER_ID = "sendUserId";
     public Long getSendUserId(String roomId){
         Object obj = redisTemplate.opsForHash().get(getKey(roomId), FIELD_SEND_USER_ID);
@@ -45,6 +62,9 @@ public class RoomDataRedisManger {
         return (Long)redisTemplate.opsForHash().get(getKey(roomId),FIELD_SEND_USER_ID);
     }
 
+    /**
+     * 房间缓存 邀请用户Id保存
+     */
     private String FIELD_INVITED_USER_ID = "invitedUserId";
     public Long getInvitedUserId(String roomId){
         Object obj = redisTemplate.opsForHash().get(getKey(roomId),FIELD_INVITED_USER_ID);
@@ -54,19 +74,17 @@ public class RoomDataRedisManger {
         return (Long)redisTemplate.opsForHash().get(getKey(roomId),FIELD_INVITED_USER_ID);
     }
 
+    /**
+     * 房间缓存 房间开始时间
+     */
     private String FIELD_START_TIME = "startTime";
     public Long getStartTime(String roomId){
         return (Long)redisTemplate.opsForHash().get(getKey(roomId),FIELD_START_TIME);
     }
 
-    private String FIELD_CONFIRM_TIME = "confirmTime";
-    public void putConfirmTime(String roomId,Long confirmTime){
-        redisTemplate.opsForHash().put(getKey(roomId),FIELD_CONFIRM_TIME,confirmTime);
-    }
-    public Long getConfirmTime(String roomId){
-        return (Long)redisTemplate.opsForHash().get(getKey(roomId),FIELD_CONFIRM_TIME);
-    }
-
+    /**
+     * 房间缓存 确认进入房间 发起用户记录
+     */
     private String FIELD_SEND_USER_CONFIRM_COUNT = "confirmSendUserCount";
     public Long incConfirmSendUserCount(String roomId){
         return redisTemplate.opsForHash().increment(getKey(roomId),FIELD_SEND_USER_CONFIRM_COUNT,1);
@@ -75,6 +93,9 @@ public class RoomDataRedisManger {
         return (Long)redisTemplate.opsForHash().get(getKey(roomId),FIELD_SEND_USER_CONFIRM_COUNT);
     }
 
+    /**
+     * 房间缓存 确认进入房间 邀请用户记录记录
+     */
     private String FIELD_INVITED_USER_CONFIRM_COUNT = "confirminvitedUserCount";
     public Long incConfirminvitedUserCount(String roomId){
         return redisTemplate.opsForHash().increment(getKey(roomId),FIELD_INVITED_USER_CONFIRM_COUNT,1);
@@ -83,6 +104,14 @@ public class RoomDataRedisManger {
         return (Long)redisTemplate.opsForHash().get(getKey(roomId),FIELD_INVITED_USER_CONFIRM_COUNT);
     }
 
+    /**
+     * @Author DELL
+     * @Date 14:41 2021/4/6
+     * @Description 刷新房间的redis 心跳
+     * @param: roomId
+     * @Return boolean 
+     * @Exception 
+     **/
     public boolean refreshRedisRoomEffectiveTime(String roomId){
         if(redisTemplate.hasKey(getKey(roomId))) {
             return roomHeartBeatRedisManger.refreshRedisRoomEffectiveTime(roomId);
@@ -90,10 +119,26 @@ public class RoomDataRedisManger {
         return false;
     }
 
-    public List<String> findInvalidRoom(Long startTime, Long endTime){
-        return roomHeartBeatRedisManger.findInvalidRoom(startTime,endTime);
+    /**
+     * @Author DELL
+     * @Date 14:45 2021/4/6
+     * @Description 查询失效的房间
+     * @param:
+     * @Return java.util.Set<java.lang.String>
+     * @Exception
+     **/
+    public Set<String> findInvalidRoom(){
+        return roomHeartBeatRedisManger.findInvalidRoom();
     }
 
+    /**
+     * @Author DELL
+     * @Date 14:42 2021/4/6
+     * @Description 删除房间的缓存
+     * @param: roomId
+     * @Return void 
+     * @Exception 
+     **/
     public void delete(String roomId){
         roomHeartBeatRedisManger.del(roomId);
         redisTemplate.delete(getKey(roomId));

@@ -6,7 +6,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * TODO
+ * 抢单邀请推送
  *
  * @author DELL
  * @version 1.0

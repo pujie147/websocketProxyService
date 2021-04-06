@@ -6,9 +6,12 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 /**
- * TODO
+ * 用户在redis中的缓存记录
+ * 在连接开始时创建
+ * 连接结束时定时任务回收
  *
  * @author DELL
  * @version 1.0
@@ -54,8 +57,8 @@ public class UserDataRedisManger {
         return false;
     }
 
-    public List<Long> findInvalidUser(Long startTime, Long endTime){
-        return heartBeatRedisManger.findInvalidUser(startTime,endTime);
+    public Set<Long> findInvalidUser(){
+        return heartBeatRedisManger.findInvalidUser();
     }
 
     public void del(Long userId){

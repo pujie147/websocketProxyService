@@ -6,7 +6,8 @@ import com.vdegree.february.im.service.handle.BaseImServiceHandle;
 import java.util.HashMap;
 
 /**
- * TODO
+ * handler的路由管理
+ * 保存路由映射关系
  *
  * @author DELL
  * @version 1.0

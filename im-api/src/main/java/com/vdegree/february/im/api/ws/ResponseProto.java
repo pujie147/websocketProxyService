@@ -8,7 +8,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.repository.config.RepositoryNameSpaceHandler;
 
 /**
- * TODO
+ * imService -> client 响应给客户端的协议
+ * 于该 ${@link RequestProto} 对象成对出现
  *
  * @author DELL
  * @version 1.0

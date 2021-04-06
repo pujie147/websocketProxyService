@@ -11,14 +11,14 @@ import com.vdegree.february.im.common.cache.GrabOrderRedisManger;
 import com.vdegree.february.im.common.cache.UserDataRedisManger;
 import com.vdegree.february.im.common.constant.type.ErrorEnum;
 import com.vdegree.february.im.common.constant.type.IMCMD;
-import com.vdegree.february.im.common.utils.RoomIdGenerateUtil;
 import com.vdegree.february.im.common.utils.agora.RtcTokenBuilderUtil;
 import com.vdegree.february.im.service.communication.PushManager;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * TODO
+ * 抢单处理 只有第一个人才能抢单
+ * 其他人返回 抢单结束
  * @author DELL
  * @version 1.0
  * @date 2021/3/26 19:56
@@ -52,7 +52,7 @@ public class GrabOrderApplicationHandle implements BaseImServiceHandle {
         if(count!=null && count<=1){
             Long sendUserId = msg.getMessage().getSendUserId();
             Long invitedUserId = protoContext.getInternalProto().getSendUserId();
-            String roomId = RoomIdGenerateUtil.generate(sendUserId, invitedUserId, msg.getMessage().getRoomType());
+            String roomId = msg.getMessage().getRoomType().generate(sendUserId, invitedUserId);
             EnterRoomPushMsg pushMsg = new EnterRoomPushMsg();
             pushMsg.setRoomType(msg.getMessage().getRoomType());
             pushMsg.setRoomId(roomId);

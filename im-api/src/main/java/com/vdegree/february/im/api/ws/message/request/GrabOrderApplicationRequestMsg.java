@@ -4,7 +4,7 @@ import com.vdegree.february.im.common.constant.type.RoomType;
 import lombok.Data;
 
 /**
- * TODO
+ * 抢单申请 请求
  *
  * @author DELL
  * @version 1.0

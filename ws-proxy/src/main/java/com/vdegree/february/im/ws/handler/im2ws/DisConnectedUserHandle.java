@@ -1,6 +1,7 @@
 package com.vdegree.february.im.ws.handler.im2ws;
 
 import com.vdegree.february.im.api.IMCMDRouting;
+import com.vdegree.february.im.api.im2ws.message.IM2WSDisConnectedProto;
 import com.vdegree.february.im.api.im2ws.message.IM2WSInitRoomHeartbeatProto;
 import com.vdegree.february.im.api.ws.ProtoContext;
 import com.vdegree.february.im.common.constant.type.IMCMD;
@@ -11,25 +12,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
- * 处理房间 初始化之后 imservice 通知 ws proxy 建立心跳缓存
+ * 断开用户连接
  *
  * @author DELL
  * @version 1.0
  * @date 2021/4/2 11:54
  */
-@IMCMDRouting(cmd= IMCMD.IM_WP_INIT_ROOM_HEARBEAT)
+@IMCMDRouting(cmd= IMCMD.IM_WP_DIS_CONNECTED_USER)
 @Log4j2
-public class InitRoomHeartBeatHandle implements BaseWsProxyHandle {
+public class DisConnectedUserHandle implements BaseWsProxyHandle {
     @Autowired
     private CacheChannelGroupManager cacheChannelGroupManager;
 
     @Override
     public void execute(ProtoContext protoContext) {
-        if(protoContext.getInternalProto().getIm2WSProto() instanceof IM2WSInitRoomHeartbeatProto){
-            IM2WSInitRoomHeartbeatProto im2WSInitRoomHeartbeatProto = (IM2WSInitRoomHeartbeatProto) protoContext.getInternalProto().getIm2WSProto();
-            // 判断心跳用户在一台服务器
-            if(cacheChannelGroupManager.containsUserId(im2WSInitRoomHeartbeatProto.getUserId())) {
-                cacheChannelGroupManager.addRoom(im2WSInitRoomHeartbeatProto.getUserId(), im2WSInitRoomHeartbeatProto.getRoomId());
+        if(protoContext.getInternalProto().getIm2WSProto() instanceof IM2WSDisConnectedProto){
+            IM2WSDisConnectedProto im2WSProto = (IM2WSDisConnectedProto) protoContext.getInternalProto().getIm2WSProto();
+            if(cacheChannelGroupManager.containsUserId(im2WSProto.getUserId())) {
+                cacheChannelGroupManager.deleteUser(im2WSProto.getUserId());
             }
         }else{
             log.error("Proto fail!!");

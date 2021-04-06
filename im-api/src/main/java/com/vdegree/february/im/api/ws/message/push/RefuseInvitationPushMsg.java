@@ -5,7 +5,7 @@ import com.vdegree.february.im.common.constant.type.RoomType;
 import lombok.Data;
 
 /**
- * TODO
+ * 拒接邀请推送
  *
  * @author DELL
  * @version 1.0

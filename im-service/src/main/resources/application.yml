@@ -18,7 +18,7 @@ spring:
 vdpub:
   job:
     admin:
-      addresses: http://127.0.0.1:8080/xxl-job-admin
+      addresses: http://127.0.0.1:9098/xxl-job-admin
     accessToken:
     executor:
       appname: xxl-job-executor-sample
@@ -31,11 +31,13 @@ vdpub:
 ws:
   service:
     grab-order:
-      effective-time: 60
+      effective-time: 60  # 单位s
+    heartBeat:
+      effective-time: 6000  # 单位s 会影响 用户心跳和房间心跳 有效时间  会对扣费准确度有关
 
 logging:
   level:
-    root: info
+    root: debug
 
 
 

@@ -13,17 +13,18 @@ import com.vdegree.february.im.api.IMCMDRouting;
 import com.vdegree.february.im.common.constant.type.ReplyType;
 import com.vdegree.february.im.api.ws.message.push.EnterRoomPushMsg;
 import com.vdegree.february.im.api.ws.message.request.ConfirmInvitationRequestMsg;
-import com.vdegree.february.im.common.utils.RoomIdGenerateUtil;
 import com.vdegree.february.im.common.utils.agora.RtcTokenBuilderUtil;
 import com.vdegree.february.im.service.communication.IM2WSManager;
 import com.vdegree.february.im.service.communication.PushManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * 1.接收客户端发起的聊天邀请
- * 2.回调appservice判断是否有可以邀请
- * 3.push 被邀请用户客户端
- * 4.return
+ * 确认邀请
+ * 1、接受
+ *  （1）、推送给双方进房推送
+ *  （2）、返回接受响应
+ * 2、不接受
+ *  （1）、返回不接受响应
  *
  * @author DELL
  * @version 1.0
@@ -50,7 +51,7 @@ public class SWConfirmInvitationHandle extends ConfirmInvitationHandle{
         Long sendUserId = invitedUserEnterRoomRequestMsg.getMessage().getSendUserId(); // 邀请人
         Long invitedUserId = protoContext.getInternalProto().getSendUserId(); // 被邀请人
         if(ReplyType.ACCEPT.equals(invitedUserEnterRoomRequestMsg.getMessage().getReplyType())){
-            String roomId = RoomIdGenerateUtil.generate(sendUserId, invitedUserId, invitedUserEnterRoomRequestMsg.getMessage().getRoomType());
+            String roomId = invitedUserEnterRoomRequestMsg.getMessage().getRoomType().generate(sendUserId, invitedUserId);
             EnterRoomPushMsg pushMsg = new EnterRoomPushMsg();
             pushMsg.setRoomType(invitedUserEnterRoomRequestMsg.getMessage().getRoomType());
             pushMsg.setRoomId(roomId);
@@ -76,6 +77,8 @@ public class SWConfirmInvitationHandle extends ConfirmInvitationHandle{
             pushMsg.setRoomType(invitedUserEnterRoomRequestMsg.getMessage().getRoomType());
             pushManager.pushProto(IMCMD.PUSH_ENTER_ROOM, pushMsg,Lists.newArrayList(sendUserId));
         }
+
+        //TODO 回调appservice 告知是否接受
         return protoContext.buildSuccessResponseProto();
     }
 }

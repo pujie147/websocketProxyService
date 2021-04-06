@@ -1,20 +1,8 @@
 package com.vdegree.february.im.ws.handler.netty;
 
-/**
- * TODO
- *
- * @author DELL
- * @version 1.0
- * @date 2021/3/15 15:50
- */
-
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.vdegree.february.im.api.ws.HeartBeatProto;
 import com.vdegree.february.im.api.ws.ProtoContext;
-import com.vdegree.february.im.api.ws.RequestProto;
-import com.vdegree.february.im.api.ws.ResponseProto;
-import com.vdegree.february.im.api.ws.message.request.HeartBestRequestMsg;
 import com.vdegree.february.im.common.constant.ChannelAttrConstant;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.ws.cache.CacheChannelGroupManager;
@@ -30,9 +18,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-
 /**
- * TODO
+ * 解码 handler
  *
  * @author DELL
  * @version 1.0

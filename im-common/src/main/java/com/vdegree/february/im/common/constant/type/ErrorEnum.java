@@ -19,6 +19,7 @@ public enum ErrorEnum {
     ILLEGAL_REQUEST_ERROR(2,"非法请求错误","非法请求错误"),
     DIS_CONNECTED_REQUEST_ERROR(101,"链接中断","链接中断"),
 
+
     /**
      * websocket 异常 websocket 使用
      * code范围 1001 - 1300;
@@ -33,7 +34,7 @@ public enum ErrorEnum {
      */
     GRAB_ORDER_END(1301,"抢单结束","抢单结束"),
     ILLEGAL_USER(1302,"非法用户","非法用户"),
-
+    ROOM_FAILURE(1303,"房间失效","房间失效"),
 
     ;
 

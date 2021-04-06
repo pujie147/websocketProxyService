@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.TimeUnit;
 
 /**
- * TODO
+ * 抢单缓存
+ * 保存 进入房间码
+ * 保证一个用户同时只能有一个邀请
  *
  * @author DELL
  * @version 1.0
@@ -22,36 +24,25 @@ public class GrabOrderRedisManger {
 
     private String FIELD_GRAB_ORDER_PERSON_COUNT = "GRAB_ORDER_PERSON_COUNT";
 
+    private String getKey(Long userId ){
+        return GRAB_ORDER_SESSION_DATA_REDIS_KEY+"_"+userId;
+    }
 
-    private String getKey(Long userId ,Integer enterRoomCode){
-        return GRAB_ORDER_SESSION_DATA_REDIS_KEY+"_"+userId+"_"+enterRoomCode;
+    private String getHashKey(Integer enterRoomCode){
+        return FIELD_GRAB_ORDER_PERSON_COUNT +"_"+enterRoomCode;
     }
 
     public void buildNewRedisData(Long userId ,Integer enterRoomCode,Long timeout){
-        redisTemplate.opsForHash().increment(getKey(userId,enterRoomCode),FIELD_GRAB_ORDER_PERSON_COUNT,0);
-        redisTemplate.expire(getKey(userId,enterRoomCode),timeout, TimeUnit.SECONDS);
+        redisTemplate.delete(getKey(userId));
+        redisTemplate.opsForHash().increment(getKey(userId),getHashKey(enterRoomCode),0);
+        redisTemplate.expire(getKey(userId),timeout, TimeUnit.SECONDS);
     }
 
     public Long incGrabOrderPersonCount(Long userId ,Integer enterRoomCode){
-        if(redisTemplate.opsForHash().hasKey(getKey(userId,enterRoomCode),FIELD_GRAB_ORDER_PERSON_COUNT)){
-            return redisTemplate.opsForHash().increment(getKey(userId,enterRoomCode),FIELD_GRAB_ORDER_PERSON_COUNT,0);
+        if(redisTemplate.opsForHash().hasKey(getKey(userId),getHashKey(enterRoomCode))){
+            return redisTemplate.opsForHash().increment(getKey(userId),getHashKey(enterRoomCode),1);
         }
-            return null;
+        return null;
     }
-
-//    public Long getConnectStartTime(Long userId){
-//        return (Long)redisTemplate.opsForHash().get(getKey(userId),FIELD_CONNECT_START_TIME);
-//    }
-//
-//    public void putRoomId(Long userId,String roomId){
-//        redisTemplate.opsForHash().put(getKey(userId),FIELD_ROOM_ID,roomId);
-//    }
-//    public String getRoomId(Long userId){
-//        return (String)redisTemplate.opsForHash().get(getKey(userId),FIELD_ROOM_ID);
-//    }
-//
-//    public void delRoomId(Long userId){
-//        redisTemplate.opsForHash().delete(getKey(userId),FIELD_ROOM_ID);
-//    }
 
 }

@@ -1,17 +1,13 @@
 package com.vdegree.february.im.api.ws;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vdegree.february.im.common.constant.type.IMCMD;
-import com.vdegree.february.im.common.constant.type.PushType;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
- * TODO
+ * imService 主动推送给client 的协议
  *
  * @author DELL
  * @version 1.0

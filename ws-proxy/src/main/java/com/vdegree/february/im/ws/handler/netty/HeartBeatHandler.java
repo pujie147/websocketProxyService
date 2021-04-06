@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 /**
- * TODO
+ * ws proxy 独立处理 心跳
  *
  * @author DELL
  * @version 1.0
@@ -41,6 +41,7 @@ public class HeartBeatHandler extends SimpleChannelInboundHandler<HeartBeatProto
         Long userId = ctx.channel().attr(ChannelAttrConstant.USERID).get();
         ResponseProto responseProto = msg.buildResponseProto();
         if(cacheChannelGroupManager.refreshUser(userId)) {
+            // 本地心跳有效
             log.debug("用户：{} 心跳成功",userId);
             if(msg.getMessage()!=null && msg.getMessage().getIsInRoom()!=null) {
                 if (IsInRoomEnum.InRoom.compareTo(msg.getMessage().getIsInRoom()) == 0) {
@@ -52,6 +53,7 @@ public class HeartBeatHandler extends SimpleChannelInboundHandler<HeartBeatProto
             ctx.channel().writeAndFlush(responseProto);
             return;
         }else{
+            // 本地心跳失效
             log.error("用户：{} 心跳失败 用户失效",userId);
             cacheChannelGroupManager.deleteUser(userId);
             String roomId = cacheChannelGroupManager.getRoomIdByUserId(userId);

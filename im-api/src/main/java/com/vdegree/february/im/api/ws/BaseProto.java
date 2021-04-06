@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 
 /**
- * TODO
+ * client -> wsproxy 的基础协议
  *
  * @author DELL
  * @version 1.0

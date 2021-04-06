@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 
 /**
- * TODO
+ * netty pipeline bean
  *
  * @author DELL
  * @version 1.0

@@ -1,7 +1,7 @@
 package com.vdegree.february.im.common.constant.type;
 
 /**
- * TODO
+ * 推送类型
  *
  * @author DELL
  * @version 1.0

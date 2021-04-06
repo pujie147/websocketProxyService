@@ -12,7 +12,7 @@ import org.springframework.context.annotation.DependsOn;
 import java.util.Map;
 
 /**
- * TODO
+ * handler 路由 bean
  *
  * @author DELL
  * @version 1.0
@@ -22,7 +22,15 @@ import java.util.Map;
 public class RoutingConfig {
     @Autowired
     private ApplicationContext context;
-
+    
+    /**
+     * @Author DELL
+     * @Date 15:18 2021/4/6
+     * @Description 初始化 路由映射规则
+     * @param: 
+     * @Return com.vdegree.february.im.service.communication.MQRoutingManger 
+     * @Exception 
+     **/
     @Bean(name= "routingManger")
     public MQRoutingManger routingManger(){
         Map<String, Object> beanMap = context.getBeansWithAnnotation(IMCMDRouting.class);
@@ -40,6 +48,7 @@ public class RoutingConfig {
 
     /**
      * 保留 为切换handler使用
+     * 可以在项目启动时热更新路由规则
      * @param routingManger
      * @return
      */

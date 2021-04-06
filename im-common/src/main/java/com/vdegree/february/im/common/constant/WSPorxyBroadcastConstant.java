@@ -1,7 +1,7 @@
 package com.vdegree.february.im.common.constant;
 
 /**
- * TODO
+ * wsproxy mq 常量
  *
  * @author DELL
  * @version 1.0

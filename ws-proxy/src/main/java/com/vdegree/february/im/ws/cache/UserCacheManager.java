@@ -9,14 +9,14 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * TODO
+ * 用户本地心跳缓存
  *
  * @author DELL
  * @version 1.0
  * @date 2021/3/19 11:21
  */
 @Log4j2
-public class UserCacheManager {
+class UserCacheManager {
     /** 缓存项最大数量 */
     private final long GUAVA_CACHE_SIZE;
 

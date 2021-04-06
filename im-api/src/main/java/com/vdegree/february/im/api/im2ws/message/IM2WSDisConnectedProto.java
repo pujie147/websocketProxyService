@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * imservice 通知 wsproxy 初始化 房间心跳缓存
+ * imservice 通知 wsproxy 断开用户的连接释放本地缓存
  *
  * @author DELL
  * @version 1.0
@@ -13,7 +13,6 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class IM2WSInitRoomHeartbeatProto extends IM2WSProto {
+public class IM2WSDisConnectedProto extends IM2WSProto {
     private Long userId;
-    private String roomId;
 }

@@ -11,16 +11,24 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Map;
 
 /**
- * TODO
+ * wsproxy handler 路由bean
  *
  * @author DELL
  * @version 1.0
  * @date 2021/3/27 10:19
  */
 @Configuration
-public class ControllerConfig {
+public class RoutingConfig {
     @Autowired
     private ApplicationContext context;
+    /**
+     * @Author DELL
+     * @Date 15:52 2021/4/6
+     * @Description 初始化路由规则
+     * @param:
+     * @Return com.vdegree.february.im.ws.handler.RoutingManger
+     * @Exception
+     **/
     @Bean
     public RoutingManger routingManager(){
         Map<String, Object> beanMap = context.getBeansWithAnnotation(IMCMDRouting.class);

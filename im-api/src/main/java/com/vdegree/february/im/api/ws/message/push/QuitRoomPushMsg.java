@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * TODO
+ * 退出房间推送
  *
  * @author DELL
  * @version 1.0

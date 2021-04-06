@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * TODO
+ * TODO 用于模拟调试 rpc调用
  *
  * @author DELL
  * @version 1.0

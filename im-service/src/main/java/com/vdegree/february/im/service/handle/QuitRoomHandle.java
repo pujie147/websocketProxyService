@@ -21,10 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 
 /**
- * 1.接收客户端发起的聊天邀请
- * 2.回调appservice判断是否有可以邀请
- * 3.push 被邀请用户客户端
- * 4.return
+ * 单用户发起离开房间
  *
  * @author DELL
  * @version 1.0

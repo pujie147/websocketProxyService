@@ -5,7 +5,7 @@ import com.vdegree.february.im.common.constant.type.RoomType;
 import java.util.List;
 
 /**
- * TODO
+ * imService 对外提供的service
  *
  * @author DELL
  * @version 1.0

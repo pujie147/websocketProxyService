@@ -20,7 +20,11 @@ import javax.annotation.PostConstruct;
 import java.util.*;
 
 /**
- * TODO
+ * 管理wsproxy 本地缓存：
+ *
+ * userId bind channle
+ * user heartBeat
+ * room heartBeat
  *
  * @author DELL
  * @version 1.0
@@ -44,9 +48,6 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
     private UserDataRedisManger userDataRedisManger;
     @Autowired
     private RoomDataRedisManger roomDataRedisManger;
-
-
-
 
     public CacheChannelGroupManager(EventExecutor executor) {
         super(executor);
@@ -160,6 +161,7 @@ public class CacheChannelGroupManager extends DefaultChannelGroup {
     }
 
     public void deleteUser(Long userId){
+        this.remove(userCacheManager.getChannelByUserId(userId));
         userCacheManager.remove(userId);
     }
 

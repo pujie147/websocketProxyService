@@ -6,7 +6,7 @@ import org.springframework.beans.BeanUtils;
 
 
 /**
- * TODO
+ * 心跳协议
  *
  * @author DELL
  * @version 1.0
