@@ -38,15 +38,24 @@ public class ProtoContext implements Serializable {
         return proto;
     }
 
-    public ProtoContext buildSuccessResponseProto() {
-        this.responseProto = new Gson().toJson(ResponseProto.buildResponse(this.baseProto));
-        this.internalProto.setImCMDType(this.getBaseProto().getCmd().getType());
-        return this;
+    public ProtoContext buildFailResponseProto(ErrorEnum errorEnum,Gson gson) {
+        return buildResponseProto(null,errorEnum,gson);
     }
 
-    public ProtoContext buildFailResponseProto(ErrorEnum errorEnum) {
-        this.responseProto = new Gson().toJson(ResponseProto.buildResponse(this.baseProto,errorEnum));
+    public ProtoContext buildSuccessResponseProto(Gson gson) {
+        return buildSuccessResponseProto(null,gson);
+    }
+
+    public ProtoContext buildSuccessResponseProto(Object msg,Gson gson) {
+        return buildResponseProto(msg,ErrorEnum.SUCCESS,gson);
+    }
+
+    public ProtoContext buildResponseProto(Object msg,ErrorEnum errorEnum,Gson gson) {
+        ResponseProto response = ResponseProto.buildResponse(this.baseProto, errorEnum);
+        response.setError(errorEnum);
         this.internalProto.setImCMDType(this.getBaseProto().getCmd().getType());
+        this.responseProto = gson.toJson(response);
+//        this.responseProto.setMessage(msg);
         return this;
     }
 }
