@@ -11,7 +11,7 @@ import lombok.Data;
  * @date 2021/3/27 15:19
  */
 @Data
-public class InvitedUserEnterRoomRequestMsg {
+public class InvitedUserEnterRoomRequestMsg implements BaseRequestMsg{
     private Long invitedUserId;
     private RoomType roomType;
 }

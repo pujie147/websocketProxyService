@@ -1,7 +1,6 @@
 package com.vdegree.february.im.service.service;
 
 import com.google.common.collect.Lists;
-import com.vdegree.february.im.api.im2ws.IM2WSProto;
 import com.vdegree.february.im.api.im2ws.message.IM2WSDisConnectedProto;
 import com.vdegree.february.im.api.rpc.PublicAppServiceApi;
 import com.vdegree.february.im.api.ws.message.push.GrabOrderInvitationPushMsg;

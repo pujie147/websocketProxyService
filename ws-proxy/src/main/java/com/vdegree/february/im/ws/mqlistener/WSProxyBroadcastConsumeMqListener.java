@@ -1,10 +1,11 @@
 package com.vdegree.february.im.ws.mqlistener;
 
+import com.google.common.collect.Lists;
 import com.vdegree.february.im.api.ws.ProtoContext;
 import com.vdegree.february.im.common.constant.WSPorxyBroadcastConstant;
 import com.vdegree.february.im.common.constant.type.IMCMD;
-import com.vdegree.february.im.ws.handler.BaseWsProxyHandle;
-import com.vdegree.february.im.ws.handler.RoutingManger;
+import com.vdegree.february.im.common.routing.HandlerInfo;
+import com.vdegree.february.im.common.routing.MQRoutingManger;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.*;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * wsproxy 接收 imservice 广播消费
@@ -24,8 +27,7 @@ import org.springframework.stereotype.Component;
 public class WSProxyBroadcastConsumeMqListener {
 
     @Autowired
-    @Qualifier("routingManager")
-    private RoutingManger controllerManager;
+    private MQRoutingManger routingManger;
 
     @RabbitHandler
     @RabbitListener(bindings = @QueueBinding(
@@ -33,14 +35,40 @@ public class WSProxyBroadcastConsumeMqListener {
             exchange = @Exchange(value = WSPorxyBroadcastConstant.EXCHANGE_NAME, type = ExchangeTypes.FANOUT),
             key = WSPorxyBroadcastConstant.ROUTING_KEY))
     public void process(ProtoContext protoContext){
-        System.out.println("WSProxyBroadcastConsumeMqListener: "+ protoContext.toString());
+        log.debug("WSProxyBroadcastConsumeMqListener: "+ protoContext.toString());
         // 判断消费类型
-        IMCMD consumeType = IMCMD.getConsumeType(protoContext.getInternalProto().getImCMDType());
-        BaseWsProxyHandle handle = controllerManager.getHandler(consumeType.getType());
-        if(handle!=null){
-            handle.execute(protoContext);
-            return;
+        try {
+            IMCMD consumeType = IMCMD.getConsumeType(protoContext.getInternalProto().getImCMDType());
+            HandlerInfo routingInfo = routingManger.get(consumeType.getType());
+            if (routingInfo != null) {
+                List<Object> params = builParameter(routingInfo.getParams(), protoContext);
+                Object result = routingInfo.getMethod().invoke(routingInfo.getClazz(), params.toArray());
+                return;
+            }
+        }catch (Exception e){
+            log.error(e);
         }
-        log.error("找不到对应hanlde cmd :{} user:{}", protoContext.getInternalProto().getImCMDType());
     }
+
+    public boolean supportsParameter(Class<?> paramType) {
+        return (ProtoContext.class.isAssignableFrom(paramType)
+
+        );
+    }
+
+    public List<Object> builParameter(List<Class> params, ProtoContext msg) throws RuntimeException{
+        List<Object> list = Lists.newArrayList();
+        params.forEach(param-> {
+            if (supportsParameter(param)) {
+                if (ProtoContext.class.isAssignableFrom(param)) {
+                    list.add(msg);
+                }
+            } else {
+                throw new RuntimeException("no supports parameter");
+            }
+        });
+        return list;
+    }
+
+
 }

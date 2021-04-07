@@ -1,10 +1,9 @@
 package com.vdegree.february.im.service.handle;
 
 import com.google.common.collect.Lists;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.vdegree.february.im.api.IMCMDRouting;
-import com.vdegree.february.im.api.ws.*;
+import com.vdegree.february.im.common.routing.IMCMDRouting;
+import com.vdegree.february.im.common.routing.IMCMDUp;
+import com.vdegree.february.im.api.ws.InternalProto;
 import com.vdegree.february.im.api.ws.message.push.EnterRoomPushMsg;
 import com.vdegree.february.im.api.ws.message.request.GrabOrderApplicationRequestMsg;
 import com.vdegree.february.im.common.cache.GrabOrderRedisManger;
@@ -13,30 +12,23 @@ import com.vdegree.february.im.common.constant.type.ErrorEnum;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.common.utils.agora.RtcTokenBuilderUtil;
 import com.vdegree.february.im.service.communication.PushManager;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * 抢单处理 只有第一个人才能抢单
- * 其他人返回 抢单结束
+ * 抢入房邀请单
+ * 处理
+ *
  * @author DELL
  * @version 1.0
- * @date 2021/3/26 19:56
+ * @date 2021/4/7 10:28
  */
-@IMCMDRouting(cmd = IMCMD.REQUEST_GRAB_ORDER_APPLICATION)
-public class GrabOrderApplicationHandle implements BaseImServiceHandle {
-
+@IMCMDUp
+public class GrabOrderHandle {
     @Autowired
     private GrabOrderRedisManger grabOrderRedisManger;
 
     @Autowired
-    private Gson gson;
-
-    @Autowired
     private RtcTokenBuilderUtil rtcTokenBuilderUtil;
-
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
 
     @Autowired
     private UserDataRedisManger userDataRedisManger;
@@ -44,17 +36,26 @@ public class GrabOrderApplicationHandle implements BaseImServiceHandle {
     @Autowired
     private PushManager pushManager;
 
-
-    @Override
-    public ProtoContext execute(ProtoContext protoContext) {
-        RequestProto<GrabOrderApplicationRequestMsg> msg = gson.fromJson(protoContext.getJson(),new TypeToken<RequestProto<GrabOrderApplicationRequestMsg>>(){}.getType());
-        Long count = grabOrderRedisManger.incGrabOrderPersonCount(msg.getMessage().getSendUserId(), msg.getMessage().getEnterRoomCode());
+    /**
+     * @Author DELL
+     * @Date 10:32 2021/4/7
+     * @Description
+     * 抢单处理 只有第一个人才能抢单
+     * 其他人返回 抢单结束
+     * @param: msg
+     * @param: internalProto
+     * @Return com.vdegree.february.im.common.constant.type.ErrorEnum
+     * @Exception
+     **/
+    @IMCMDRouting(cmd = IMCMD.REQUEST_GRAB_ORDER_APPLICATION)
+    public ErrorEnum grabOrderApplication(GrabOrderApplicationRequestMsg msg, InternalProto internalProto){
+        Long count = grabOrderRedisManger.incGrabOrderPersonCount(msg.getSendUserId(), msg.getEnterRoomCode());
         if(count!=null && count<=1){
-            Long sendUserId = msg.getMessage().getSendUserId();
-            Long invitedUserId = protoContext.getInternalProto().getSendUserId();
-            String roomId = msg.getMessage().getRoomType().generate(sendUserId, invitedUserId);
+            Long sendUserId = msg.getSendUserId();
+            Long invitedUserId = internalProto.getSendUserId();
+            String roomId = msg.getRoomType().generate(sendUserId, invitedUserId);
             EnterRoomPushMsg pushMsg = new EnterRoomPushMsg();
-            pushMsg.setRoomType(msg.getMessage().getRoomType());
+            pushMsg.setRoomType(msg.getRoomType());
             pushMsg.setRoomId(roomId);
 
             // 邀请人
@@ -68,8 +69,8 @@ public class GrabOrderApplicationHandle implements BaseImServiceHandle {
             pushMsg.setToken(token);
             pushManager.pushProto(IMCMD.PUSH_ENTER_ROOM, pushMsg, Lists.newArrayList(invitedUserId));
 
-            return protoContext.buildSuccessResponseProto();
+            return ErrorEnum.SUCCESS;
         }
-        return protoContext.buildFailResponseProto(ErrorEnum.GRAB_ORDER_END);
+        return ErrorEnum.GRAB_ORDER_END;
     }
 }

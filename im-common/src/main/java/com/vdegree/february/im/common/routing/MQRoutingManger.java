@@ -1,7 +1,6 @@
-package com.vdegree.february.im.service.communication;
+package com.vdegree.february.im.common.routing;
 
 import com.google.common.collect.Maps;
-import com.vdegree.february.im.service.handle.BaseImServiceHandle;
 
 import java.util.HashMap;
 
@@ -13,7 +12,7 @@ import java.util.HashMap;
  * @version 1.0
  * @date 2021/3/27 11:51
  */
-public class MQRoutingManger extends HashMap<Integer, BaseImServiceHandle> {
+public class MQRoutingManger extends HashMap<Integer, HandlerInfo> {
     public MQRoutingManger(int initialCapacity) {
         Maps.newHashMapWithExpectedSize(initialCapacity);
     }

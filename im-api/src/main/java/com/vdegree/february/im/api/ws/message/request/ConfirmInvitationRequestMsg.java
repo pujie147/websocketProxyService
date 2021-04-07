@@ -12,7 +12,7 @@ import lombok.Data;
  * @date 2021/3/27 16:13
  */
 @Data
-public class ConfirmInvitationRequestMsg {
+public class ConfirmInvitationRequestMsg implements BaseRequestMsg{
     private Long sendUserId;
     private ReplyType replyType;
     private RoomType roomType;

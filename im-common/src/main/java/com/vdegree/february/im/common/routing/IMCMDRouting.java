@@ -1,4 +1,4 @@
-package com.vdegree.february.im.api;
+package com.vdegree.february.im.common.routing;
 
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import org.springframework.core.annotation.AliasFor;
@@ -13,12 +13,9 @@ import java.lang.annotation.*;
  * @version 1.0
  * @date 2021/3/27 10:12
  */
-@Target({ElementType.TYPE})
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Component
 public @interface IMCMDRouting {
     IMCMD cmd();
-    @AliasFor(annotation = Component.class, attribute = "value")
-    String value() default "";
 }

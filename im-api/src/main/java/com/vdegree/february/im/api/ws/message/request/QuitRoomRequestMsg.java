@@ -11,7 +11,7 @@ import lombok.Data;
  * @date 2021/3/27 15:19
  */
 @Data
-public class QuitRoomRequestMsg {
+public class QuitRoomRequestMsg implements BaseRequestMsg{
     private String roomId;
     private RoomType roomType;
 }

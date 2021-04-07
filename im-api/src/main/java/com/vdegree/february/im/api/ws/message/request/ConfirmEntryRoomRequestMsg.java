@@ -11,7 +11,7 @@ import lombok.Data;
  * @date 2021/3/27 16:13
  */
 @Data
-public class ConfirmEntryRoomRequestMsg {
+public class ConfirmEntryRoomRequestMsg implements BaseRequestMsg {
     private String roomId;
     private RoomType roomType;
 

@@ -1,6 +1,8 @@
 package com.vdegree.february.im.ws.handler.netty;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.vdegree.february.im.api.ws.HeartBeatProto;
 import com.vdegree.february.im.api.ws.ProtoContext;
 import com.vdegree.february.im.common.constant.ChannelAttrConstant;
