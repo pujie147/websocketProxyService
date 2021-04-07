@@ -1,6 +1,7 @@
 package com.vdegree.february.im.api.ws.message.push;
 
 import com.vdegree.february.im.common.constant.type.RoomType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.io.Serializable;
  * @date 2021/3/30 11:55
  */
 @Data
+@AllArgsConstructor
 public class GrabOrderInvitationPushMsg implements Serializable {
     private Long sendUserId;
     private RoomType roomType;

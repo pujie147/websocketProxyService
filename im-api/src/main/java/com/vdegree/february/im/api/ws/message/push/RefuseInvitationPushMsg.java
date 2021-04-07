@@ -2,6 +2,7 @@ package com.vdegree.february.im.api.ws.message.push;
 
 import com.vdegree.february.im.common.constant.type.ReplyType;
 import com.vdegree.february.im.common.constant.type.RoomType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -12,6 +13,7 @@ import lombok.Data;
  * @date 2021/3/27 16:25
  */
 @Data
+@AllArgsConstructor
 public class RefuseInvitationPushMsg {
     private Long invitedUserId;
     private ReplyType replyType;

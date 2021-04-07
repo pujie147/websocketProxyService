@@ -82,7 +82,7 @@ public class ReceiverWSProxy {
         );
     }
 
-    public List<Object> builParameter(List<Class> params,ProtoContext msg){
+    public List<Object> builParameter(List<Class> params,ProtoContext msg) throws RuntimeException{
         List<Object> list = Lists.newArrayList();
         params.forEach(param-> {
             if (supportsParameter(param)) {
@@ -94,7 +94,7 @@ public class ReceiverWSProxy {
                     list.add(gson.fromJson(msg.getMsg(),TypeToken.of(param).getType()));
                 }
             } else {
-                list.add(gson.fromJson(msg.getMsg(),TypeToken.of(param).getType()));
+                throw new RuntimeException("not supports param");
             }
         });
         return list;

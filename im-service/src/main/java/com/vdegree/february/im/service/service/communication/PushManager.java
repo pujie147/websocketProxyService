@@ -1,4 +1,4 @@
-package com.vdegree.february.im.service.communication;
+package com.vdegree.february.im.service.service.communication;
 
 import com.google.gson.Gson;
 import com.vdegree.february.im.api.ws.ProtoContext;
@@ -20,7 +20,7 @@ import java.util.List;
  * @date 2021/3/31 15:36
  */
 @Component
-public class PushManager {
+class PushManager {
     @Autowired
     private RabbitTemplate rabbitTemplate;
     @Autowired
@@ -33,17 +33,6 @@ public class PushManager {
         protoContext.getBaseProto().setCmd(imcmd);
         protoContext.getInternalProto().setPustUserIds(pushUserIds);
         protoContext.getInternalProto().setPushType(PushType.PUSH_CONTAIN_USER);
-        protoContext.getInternalProto().setImCMDType(imcmd.getType());
-        rabbitTemplate.convertAndSend(WSPorxyBroadcastConstant.EXCHANGE_NAME,null,protoContext);
-    }
-
-    public void pushProto(IMCMD imcmd, Object message,PushType pushType, List<Long> pushUserIds){
-        PushProto pushProto = PushProto.buildPush(imcmd, message);
-        ProtoContext protoContext = new ProtoContext();
-        protoContext.setResponseProto(gson.toJson(pushProto));
-        protoContext.getBaseProto().setCmd(imcmd);
-        protoContext.getInternalProto().setPustUserIds(pushUserIds);
-        protoContext.getInternalProto().setPushType(pushType);
         protoContext.getInternalProto().setImCMDType(imcmd.getType());
         rabbitTemplate.convertAndSend(WSPorxyBroadcastConstant.EXCHANGE_NAME,null,protoContext);
     }

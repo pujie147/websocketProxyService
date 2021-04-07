@@ -25,7 +25,7 @@ public class RoutingConfig {
      * @Date 15:18 2021/4/6
      * @Description 初始化 路由映射规则
      * @param: 
-     * @Return com.vdegree.february.im.service.communication.MQRoutingManger 
+     * @Return com.vdegree.february.im.service.service.communication.MQRoutingManger
      * @Exception 
      **/
     @Bean(name= "routingManger")

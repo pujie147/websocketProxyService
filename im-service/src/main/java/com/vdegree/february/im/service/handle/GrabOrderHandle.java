@@ -1,17 +1,15 @@
 package com.vdegree.february.im.service.handle;
 
-import com.google.common.collect.Lists;
 import com.vdegree.february.im.common.routing.IMCMDRouting;
 import com.vdegree.february.im.common.routing.IMCMDUp;
 import com.vdegree.february.im.api.ws.InternalProto;
-import com.vdegree.february.im.api.ws.message.push.EnterRoomPushMsg;
 import com.vdegree.february.im.api.ws.message.request.GrabOrderApplicationRequestMsg;
 import com.vdegree.february.im.common.cache.GrabOrderRedisManger;
 import com.vdegree.february.im.common.cache.UserDataRedisManger;
 import com.vdegree.february.im.common.constant.type.ErrorEnum;
 import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.common.utils.agora.RtcTokenBuilderUtil;
-import com.vdegree.february.im.service.communication.PushManager;
+import com.vdegree.february.im.service.service.communication.PushService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -34,7 +32,7 @@ public class GrabOrderHandle {
     private UserDataRedisManger userDataRedisManger;
 
     @Autowired
-    private PushManager pushManager;
+    private PushService pushService;
 
     /**
      * @Author DELL
@@ -54,20 +52,15 @@ public class GrabOrderHandle {
             Long sendUserId = msg.getSendUserId();
             Long invitedUserId = internalProto.getSendUserId();
             String roomId = msg.getRoomType().generate(sendUserId, invitedUserId);
-            EnterRoomPushMsg pushMsg = new EnterRoomPushMsg();
-            pushMsg.setRoomType(msg.getRoomType());
-            pushMsg.setRoomId(roomId);
 
             // 邀请人
             String token = rtcTokenBuilderUtil.build(sendUserId.intValue(), roomId);
-            pushMsg.setToken(token);
-            pushManager.pushProto(IMCMD.PUSH_ENTER_ROOM, pushMsg, Lists.newArrayList(sendUserId));
+            pushService.enterRoom(roomId,msg.getRoomType(),token,sendUserId);
             userDataRedisManger.putRoomId(sendUserId,roomId);
 
             // 被邀请人
             token = rtcTokenBuilderUtil.build(invitedUserId.intValue(), roomId);
-            pushMsg.setToken(token);
-            pushManager.pushProto(IMCMD.PUSH_ENTER_ROOM, pushMsg, Lists.newArrayList(invitedUserId));
+            pushService.enterRoom(roomId,msg.getRoomType(),token,sendUserId);
 
             return ErrorEnum.SUCCESS;
         }

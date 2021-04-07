@@ -2,12 +2,7 @@ package com.vdegree.february.im.service.handle;
 
 import com.google.common.collect.Lists;
 import com.vdegree.february.im.common.routing.IMCMDUp;
-import com.vdegree.february.im.api.im2ws.message.IM2WSInitRoomHeartbeatProto;
 import com.vdegree.february.im.api.ws.InternalProto;
-import com.vdegree.february.im.api.ws.message.push.EnterRoomPushMsg;
-import com.vdegree.february.im.api.ws.message.push.InvitedUserEnterRoomPushMsg;
-import com.vdegree.february.im.api.ws.message.push.QuitRoomPushMsg;
-import com.vdegree.february.im.api.ws.message.push.RefuseInvitationPushMsg;
 import com.vdegree.february.im.api.ws.message.request.ConfirmEntryRoomRequestMsg;
 import com.vdegree.february.im.api.ws.message.request.ConfirmInvitationRequestMsg;
 import com.vdegree.february.im.api.ws.message.request.InvitedUserEnterRoomRequestMsg;
@@ -20,8 +15,8 @@ import com.vdegree.february.im.common.routing.IMCMDRouting;
 import com.vdegree.february.im.common.constant.type.ReplyType;
 import com.vdegree.february.im.common.constant.type.RoomType;
 import com.vdegree.february.im.common.utils.agora.RtcTokenBuilderUtil;
-import com.vdegree.february.im.service.communication.IM2WSManager;
-import com.vdegree.february.im.service.communication.PushManager;
+import com.vdegree.february.im.service.service.communication.IM2WSService;
+import com.vdegree.february.im.service.service.communication.PushService;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,13 +40,13 @@ public class OneVOneRoomHandle {
     private RoomDataRedisManger roomDataRedisManger;
 
     @Autowired
-    private PushManager pushManager;
+    private PushService pushService;
 
     @Autowired
     private RtcTokenBuilderUtil rtcTokenBuilderUtil;
 
     @Autowired
-    private IM2WSManager im2WSManager;
+    private IM2WSService im2WSService;
 
     
     /**
@@ -66,10 +61,7 @@ public class OneVOneRoomHandle {
     @IMCMDRouting(cmd = IMCMD.REQUEST_INVITED_USER_ENTER_ROOM)
     public ErrorEnum invitedUserEnterRoomHandle(InvitedUserEnterRoomRequestMsg msg,InternalProto internalProto){
         // TODO 回调 appservice 是否能发起邀请
-        InvitedUserEnterRoomPushMsg pushMsg = new InvitedUserEnterRoomPushMsg();
-        pushMsg.setRoomType(msg.getRoomType());
-        pushMsg.setSendUserId(internalProto.getSendUserId());
-        pushManager.pushProto(IMCMD.PUSH_INVITED_USER_ENTER_ROOM,pushMsg, Lists.newArrayList(msg.getInvitedUserId()));
+        pushService.invitedUserEnterRoom(msg.getRoomType(),internalProto.getSendUserId(),msg.getInvitedUserId());
         return ErrorEnum.SUCCESS;
     }
 
@@ -88,30 +80,26 @@ public class OneVOneRoomHandle {
         Long invitedUserId = internalProto.getSendUserId(); // 被邀请人
         if(ReplyType.ACCEPT.equals(msg.getReplyType())){
             String roomId = msg.getRoomType().generate(sendUserId, invitedUserId);
-            EnterRoomPushMsg pushMsg = new EnterRoomPushMsg();
-            pushMsg.setRoomType(msg.getRoomType());
-            pushMsg.setRoomId(roomId);
+//            EnterRoomPushMsg pushMsg = new EnterRoomPushMsg();
+//            pushMsg.setRoomType(msg.getRoomType());
+//            pushMsg.setRoomId(roomId);
 
             // 邀请人
             String token = rtcTokenBuilderUtil.build(sendUserId.intValue(), roomId);
-            pushMsg.setToken(token);
-            pushManager.pushProto(IMCMD.PUSH_ENTER_ROOM, pushMsg,Lists.newArrayList(sendUserId));
+//            pushMsg.setToken(token);
+            pushService.enterRoom(roomId,msg.getRoomType(),token,sendUserId);
             userDataRedisManger.putRoomId(sendUserId,roomId);
 
             // 被邀请人
             token = rtcTokenBuilderUtil.build(invitedUserId.intValue(), roomId);
-            pushMsg.setToken(token);
-            pushManager.pushProto(IMCMD.PUSH_ENTER_ROOM, pushMsg,Lists.newArrayList(invitedUserId));
+//            pushMsg.setToken(token);
+            pushService.enterRoom(roomId,msg.getRoomType(),token,sendUserId);
             userDataRedisManger.putRoomId(invitedUserId,roomId);
 
             roomDataRedisManger.buildNewRedisData(roomId,sendUserId,invitedUserId);
-            im2WSManager.sendProto(IMCMD.IM_WP_INIT_ROOM_HEARBEAT,new IM2WSInitRoomHeartbeatProto(sendUserId,roomId));
+            im2WSService.initRoomHeartbeat(sendUserId,roomId);
         }else{
-            RefuseInvitationPushMsg pushMsg = new RefuseInvitationPushMsg();
-            pushMsg.setInvitedUserId(invitedUserId);
-            pushMsg.setReplyType(msg.getReplyType());
-            pushMsg.setRoomType(msg.getRoomType());
-            pushManager.pushProto(IMCMD.PUSH_ENTER_ROOM, pushMsg,Lists.newArrayList(sendUserId));
+            pushService.refuseInvitation(invitedUserId,msg.getReplyType(),msg.getRoomType(),sendUserId);
         }
         //TODO 回调appservice 告知是否接受
         return ErrorEnum.SUCCESS;
@@ -167,7 +155,8 @@ public class OneVOneRoomHandle {
                     Long invitedUserId = roomDataRedisManger.getInvitedUserId(roomId);
                     ArrayList<Long> pushUserids = Lists.newArrayList(sendUserId, invitedUserId);
                     pushUserids.remove(internalProto.getSendUserId());
-                    pushManager.pushProto(IMCMD.PUSH_QUIT_ROOM, new QuitRoomPushMsg(roomId, roomType), pushUserids);
+
+                    pushService.quitRoom(roomId,roomType,sendUserId,invitedUserId);
                     userDataRedisManger.delRoomId(sendUserId);
                     userDataRedisManger.delRoomId(invitedUserId);
                     // 删除房间session信息

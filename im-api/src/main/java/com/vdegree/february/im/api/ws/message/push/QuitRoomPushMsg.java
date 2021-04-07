@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class QuitRoomPushMsg {
+    private Long sendUserId;
     private String roomId;
     private RoomType roomType;
-
 }

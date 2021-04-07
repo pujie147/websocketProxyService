@@ -1,6 +1,7 @@
 package com.vdegree.february.im.api.ws.message.push;
 
 import com.vdegree.february.im.common.constant.type.RoomType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Data;
  * @date 2021/3/27 15:19
  */
 @Data
+@AllArgsConstructor
 public class InvitedUserEnterRoomPushMsg {
     private Long sendUserId;
     private RoomType roomType;

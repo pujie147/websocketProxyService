@@ -1,19 +1,13 @@
 package com.vdegree.february.im.service.service;
 
-import com.google.common.collect.Lists;
-import com.vdegree.february.im.api.im2ws.message.IM2WSDisConnectedProto;
 import com.vdegree.february.im.api.rpc.PublicAppServiceApi;
-import com.vdegree.february.im.api.ws.message.push.GrabOrderInvitationPushMsg;
-import com.vdegree.february.im.api.ws.message.push.QuitRoomPushMsg;
-import com.vdegree.february.im.api.ws.message.push.ServiceEventPushMsg;
 import com.vdegree.february.im.common.cache.GrabOrderRedisManger;
 import com.vdegree.february.im.common.cache.RoomDataRedisManger;
 import com.vdegree.february.im.common.cache.UserDataRedisManger;
 import com.vdegree.february.im.common.constant.type.ErrorEnum;
-import com.vdegree.february.im.common.constant.type.IMCMD;
 import com.vdegree.february.im.common.constant.type.RoomType;
-import com.vdegree.february.im.service.communication.IM2WSManager;
-import com.vdegree.february.im.service.communication.PushManager;
+import com.vdegree.february.im.service.service.communication.IM2WSService;
+import com.vdegree.february.im.service.service.communication.PushService;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,25 +34,20 @@ public class PublicAppServiceApiImpl implements PublicAppServiceApi {
     private Long grabOrderEffectiveTime;
 
     @Autowired
-    private PushManager pushManager;
+    private PushService pushService;
     @Autowired
     private RoomDataRedisManger roomDataRedisManger;
     @Autowired
     private UserDataRedisManger userDataRedisManger;
 
     @Autowired
-    private IM2WSManager im2WSManager;
+    private IM2WSService im2WSService;
 
     @Override
     public boolean sendGrabOrderApi(Long sendUserId, List<Long> invitationUserIds, RoomType roomType) {
         try {
             int enterRoomCode = new Random().nextInt(6000);
-            GrabOrderInvitationPushMsg grabOrderInvitationPushMsg = new GrabOrderInvitationPushMsg();
-            grabOrderInvitationPushMsg.setRoomType(roomType);
-            grabOrderInvitationPushMsg.setSendUserId(sendUserId);
-            grabOrderInvitationPushMsg.setEnterRoomCode(enterRoomCode);
-            grabOrderRedisManger.buildNewRedisData(sendUserId, enterRoomCode, grabOrderEffectiveTime);
-            pushManager.pushProto(IMCMD.PUSH_GRAB_ORDER_INVITATION, grabOrderInvitationPushMsg, invitationUserIds);
+            pushService.grabOrderInvitation(sendUserId,enterRoomCode,roomType,invitationUserIds);
         }catch (Exception e){
             log.error(e);
             return false;
@@ -85,7 +74,7 @@ public class PublicAppServiceApiImpl implements PublicAppServiceApi {
                 try {
                     Long sendUserId = roomDataRedisManger.getSendUserId(roomId);
                     Long invitedUserId = roomDataRedisManger.getInvitedUserId(roomId);
-                    pushManager.pushProto(IMCMD.PUSH_QUIT_ROOM, new QuitRoomPushMsg(roomId, roomType), Lists.newArrayList(sendUserId, invitedUserId));
+//              TODO 缺少关闭房间的push请求      pushService.quitRoom(roomId,roomType,sendUserId,invitedUserId);
                     userDataRedisManger.delRoomId(sendUserId);
                     userDataRedisManger.delRoomId(invitedUserId);
                     roomDataRedisManger.delete(roomId);
@@ -116,19 +105,19 @@ public class PublicAppServiceApiImpl implements PublicAppServiceApi {
             Long invitedUserId = roomDataRedisManger.getInvitedUserId(roomId);
             Long sendUserId = roomDataRedisManger.getSendUserId(roomId);
             if (userId.compareTo(invitedUserId) == 0) {
-                pushManager.pushProto(IMCMD.PUSH_SERVICE_EVENT, new ServiceEventPushMsg(ErrorEnum.ROOM_FAILURE), Lists.newArrayList(sendUserId));
-                pushManager.pushProto(IMCMD.PUSH_SERVICE_EVENT, new ServiceEventPushMsg(ErrorEnum.DIS_CONNECTED_REQUEST_ERROR), Lists.newArrayList(invitedUserId));
+                pushService.serviceEvent(ErrorEnum.ROOM_FAILURE,sendUserId);
+                pushService.serviceEvent(ErrorEnum.DIS_CONNECTED_REQUEST_ERROR,invitedUserId);
                 userDataRedisManger.delRoomId(sendUserId);
                 roomDataRedisManger.delete(roomId);
             } else if (userId.compareTo(sendUserId) == 0) {
-                pushManager.pushProto(IMCMD.PUSH_SERVICE_EVENT, new ServiceEventPushMsg(ErrorEnum.ROOM_FAILURE), Lists.newArrayList(invitedUserId));
-                pushManager.pushProto(IMCMD.PUSH_SERVICE_EVENT, new ServiceEventPushMsg(ErrorEnum.DIS_CONNECTED_REQUEST_ERROR), Lists.newArrayList(sendUserId));
+                pushService.serviceEvent(ErrorEnum.ROOM_FAILURE,invitedUserId);
+                pushService.serviceEvent(ErrorEnum.DIS_CONNECTED_REQUEST_ERROR,sendUserId);
                 userDataRedisManger.delRoomId(invitedUserId);
                 roomDataRedisManger.delete(roomId);
             }
         }
         userDataRedisManger.del(userId);
-        im2WSManager.sendProto(IMCMD.IM_WP_DIS_CONNECTED_USER,new IM2WSDisConnectedProto(userId));
+        im2WSService.disConnectedUser(userId);
         //TODO 回调 appservice 离线用户
         return true;
     }

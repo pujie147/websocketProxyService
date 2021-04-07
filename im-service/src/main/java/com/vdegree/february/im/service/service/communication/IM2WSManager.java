@@ -1,4 +1,4 @@
-package com.vdegree.february.im.service.communication;
+package com.vdegree.february.im.service.service.communication;
 
 import com.vdegree.february.im.api.im2ws.IM2WSProto;
 import com.vdegree.february.im.api.ws.ProtoContext;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  * @date 2021/3/31 15:36
  */
 @Component
-public class IM2WSManager {
+class IM2WSManager {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
