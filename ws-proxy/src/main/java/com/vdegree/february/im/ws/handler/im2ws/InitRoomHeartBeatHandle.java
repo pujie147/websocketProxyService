@@ -1,6 +1,6 @@
 //package com.vdegree.february.im.ws.handler.im2ws;
 //
-//import com.vdegree.february.im.api.IMCMDRouting;
+//import com.vdegree.february.im.common.routing.IMCMDRouting;
 //import com.vdegree.february.im.api.im2ws.message.IM2WSInitRoomHeartbeatProto;
 //import com.vdegree.february.im.api.ws.ProtoContext;
 //import com.vdegree.february.im.common.constant.type.IMCMD;

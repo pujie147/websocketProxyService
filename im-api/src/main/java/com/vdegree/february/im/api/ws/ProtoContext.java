@@ -1,6 +1,8 @@
 package com.vdegree.february.im.api.ws;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.vdegree.february.im.api.ws.message.request.HeartBestRequestMsg;
 import com.vdegree.february.im.common.constant.type.ErrorEnum;
 import com.vdegree.february.im.common.constant.type.IMCMD;
@@ -21,14 +23,17 @@ import java.util.List;
 public class ProtoContext implements Serializable {
     private BaseProto baseProto = new BaseProto();
     private InternalProto internalProto = new InternalProto();
-    private String json;
+    private String msg;
     // 可能是push 和 response
     private String responseProto ;
 
     public static ProtoContext buildContext(String json){
         ProtoContext protoContext = new ProtoContext();
-        protoContext.baseProto = new Gson().fromJson(json,BaseProto.class);
-        protoContext.json = json;
+        JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
+        protoContext.setMsg(jsonObject.getAsJsonObject("message").toString());
+        protoContext.baseProto.setCmd(IMCMD.get(jsonObject.get("cmd").getAsInt()).get());
+        protoContext.baseProto.setRequestId(jsonObject.get("requestId").getAsString());
+        protoContext.baseProto.setRequestTime(jsonObject.get("requestTime").getAsLong());
         return protoContext;
     }
 

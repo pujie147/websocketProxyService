@@ -1,6 +1,6 @@
 //package com.vdegree.february.im.ws.handler;
 //
-//import com.vdegree.february.im.api.IMCMDRouting;
+//import com.vdegree.february.im.common.routing.IMCMDRouting;
 //import com.vdegree.february.im.api.ws.ProtoContext;
 //import com.vdegree.february.im.common.constant.type.IMCMD;
 //import com.vdegree.february.im.ws.cache.CacheChannelGroupManager;

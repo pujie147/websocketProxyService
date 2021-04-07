@@ -11,7 +11,7 @@ import lombok.Data;
  * @date 2021/3/30 17:25
  */
 @Data
-public class GrabOrderApplicationRequestMsg {
+public class GrabOrderApplicationRequestMsg implements BaseRequestMsg{
     private Long sendUserId;
     private RoomType roomType;
     private Integer enterRoomCode;

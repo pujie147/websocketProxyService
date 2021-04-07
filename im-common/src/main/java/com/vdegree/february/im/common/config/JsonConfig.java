@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * json 转换 bean
+ * msg 转换 bean
  *
  * @author DELL
  * @version 1.0

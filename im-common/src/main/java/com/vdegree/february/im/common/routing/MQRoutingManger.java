@@ -1,7 +1,6 @@
-package com.vdegree.february.im.service.communication;
+package com.vdegree.february.im.common.routing;
 
 import com.google.common.collect.Maps;
-import com.vdegree.february.im.service.handle.BaseImServiceHandle;
 
 import java.util.HashMap;
 

@@ -1,16 +1,10 @@
-package com.vdegree.february.im.service.config;
+package com.vdegree.february.im.common.routing;
 
 import com.google.common.collect.Lists;
-import com.vdegree.february.im.api.IMCMDRouting;
-import com.vdegree.february.im.api.IMCMDUp;
-import com.vdegree.february.im.service.communication.HandlerInfo;
-import com.vdegree.february.im.service.communication.MQRoutingManger;
-import com.vdegree.february.im.service.handle.BaseImServiceHandle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package com.vdegree.february.im.service.communication;
+package com.vdegree.february.im.common.routing;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

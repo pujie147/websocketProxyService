@@ -11,7 +11,7 @@ import lombok.Data;
  * @date 2021/4/2 9:18
  */
 @Data
-public class HeartBestRequestMsg {
+public class HeartBestRequestMsg implements BaseRequestMsg{
     /**
      * 0 不在房间内 1：房间内
      */
